@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: mock-server
+server:
+  port: 8080
