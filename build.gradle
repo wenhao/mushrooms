@@ -34,8 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.mapstruct:mapstruct-jdk8:1.2.0.Final'
-    implementation 'io.github.openfeign.form:feign-form:3.3.0'
-    implementation 'io.github.openfeign.form:feign-form-spring:3.3.0'
+    implementation 'org.mock-server:mockserver-core:5.4.1'
     compileOnly 'org.projectlombok:lombok:1.18.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.2.0.Final'
@@ -82,20 +81,29 @@ jacocoTestReport {
         html.enabled true
         csv.enabled false
     }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(
+                dir: it,
+                exclude: [
+                    '**/Application.class',
+                    '**/domain/*.class',
+                    '**/config/*.class'
+                ]
+            )
+        })
+    }
 }
 
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            limit {
-                minimum = 0.8
-            }
-        }
-
-        rule {
-            enabled = true
-            element = 'PACKAGE'
-            includes = ['com.github.wenhao.service']
+            element = 'CLASS'
+            excludes = [
+                    '**.Application',
+                    '**.domain.*',
+                    '**.config.*'
+            ]
 
             limit {
                 counter = 'LINE'
@@ -119,5 +127,7 @@ jacocoTestCoverageVerification {
             }
         }
     }
+    dependsOn(jacocoTestReport)
 }
+check.dependsOn jacocoTestCoverageVerification
 
