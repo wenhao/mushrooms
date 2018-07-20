@@ -11,10 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AllArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-  private RequestInterceptor requestInterceptor;
+  private HttpCacheInterceptor httpCacheInterceptor;
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(requestInterceptor).addPathPatterns("/**");
+    registry.addInterceptor(httpCacheInterceptor).addPathPatterns("/**");
   }
 }

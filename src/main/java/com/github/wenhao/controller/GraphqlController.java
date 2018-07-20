@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class IndexController {
+public class GraphqlController {
 
-  @PostMapping("/gateway")
+  @PostMapping("/graphql")
   public ResponseEntity index() {
-    return ResponseEntity.ok().build();
+    return ResponseEntity.status(500).build();
   }
 }

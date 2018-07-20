@@ -1,8 +1,10 @@
 package com.github.wenhao.config;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,16 +16,24 @@ import org.mockserver.model.Cookie;
 import org.mockserver.model.Header;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.Parameter;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import reactor.core.publisher.Mono;
 
 @Service
-public class RequestInterceptor extends HandlerInterceptorAdapter {
+public class HttpCacheInterceptor extends HandlerInterceptorAdapter {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
       Object handler) throws Exception {
+    return true;
+  }
+
+  @Override
+  public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+      ModelAndView modelAndView) throws Exception {
     HttpRequest httpRequest = Mono.just(new HttpRequest())
         .map(item -> item.withPath(request.getRequestURI()))
         .map(item -> item.withMethod(request.getMethod()))
@@ -32,7 +42,16 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
         .map(item -> item.withQueryStringParameters(getParameters(request)))
         .map(item -> item.withBody(getBody(request)))
         .block();
-    return false;
+    if (HttpStatus.valueOf(response.getStatus()).equals(OK)) {
+      response.addHeader("Cached-Data", "false");
+      return;
+    }
+    response.addHeader("Cached-Data", "true");
+    response.setStatus(OK.value());
+    PrintWriter body = response.getWriter();
+    body.write("getFromCache");
+    body.flush();
+    body.close();
   }
 
   private String getBody(HttpServletRequest request) {
