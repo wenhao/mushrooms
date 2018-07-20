@@ -32,6 +32,7 @@ dependencyManagement {
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-netflix-zuul'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.projectreactor:reactor-core:3.1.8.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.mapstruct:mapstruct-jdk8:1.2.0.Final'
     implementation 'org.mock-server:mockserver-core:5.4.1'
