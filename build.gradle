@@ -23,17 +23,10 @@ version = '1.0.0-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Finchley.RELEASE'
-    }
-}
-
 dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.apache.commons:commons-pool2'
-    implementation 'io.projectreactor:reactor-core:3.1.8.RELEASE'
     compileOnly 'org.projectlombok:lombok:1.18.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.0'
 
@@ -58,22 +51,15 @@ checkstyle {
         source = 'src/main/java'
     }
 }
+
 copy {
     from "./config/githooks/"
     into "./.git/hooks/"
     fileMode 0755
 }
 
-springBoot {
-    buildInfo()
-}
-
-
-docker {
-    dependsOn build
-    name "${project.group}/${bootJar.baseName}"
-    files bootJar.archivePath
-    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
+bootJar {
+    enabled = false
 }
 
 jacocoTestReport {
