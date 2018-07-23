@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "http.cache.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "parrot.enabled", havingValue = "true", matchIfMissing = true)
 public class ParrotHttpInterceptor extends HandlerInterceptorAdapter {
 
     private final ParrotCacheRepository parrotCacheRepository;
