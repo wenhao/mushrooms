@@ -14,12 +14,14 @@ plugins {
     id 'com.github.ksoichiro.build.info' version '0.2.0'
     id "com.palantir.docker" version "0.20.1"
     id "com.jfrog.bintray" version "1.7.3"
+    id 'maven-publish'
+    id 'signing'
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '1.0.0-SNAPSHOT'
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -40,6 +42,37 @@ dependencies {
 
 repositories {
     jcenter()
+}
+
+jar {
+    enabled = true
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
 }
 
 checkstyle {
@@ -119,6 +152,55 @@ jacocoTestCoverageVerification {
 }
 check.dependsOn jacocoTestCoverageVerification
 
+def pomConfig = {
+    licenses {
+        license {
+            name 'The Apache Software License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution 'repo'
+        }
+    }
+
+    scm {
+        url 'https://github.com/wenhao/parrot'
+        connection 'https://github.com/wenhao/parrot.git'
+        developerConnection 'git@github.com:wenhao/parrot.git'
+    }
+
+    developers {
+        developer {
+            id 'wenhao'
+            name 'Hao Wen'
+            email 'wenhao@126.com'
+            organization 'Hao Wen'
+            roles {
+                role 'Developer'
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.github.wenhao'
+            artifactId 'parrot'
+            version '1.0.0'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Cacheable http server gateway.')
+                root.appendNode('name', 'parrot')
+                root.appendNode('url', 'https://github.com/wenhao/parrot')
+                root.appendNode('inceptionYear', '2018')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
 // publish to jcenter
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
@@ -131,12 +213,12 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'parrot'
-        desc = 'Cacheable http server gateway'
+        desc = 'Cacheable http server gateway.'
         licenses = ['Apache-2.0']
         websiteUrl = 'https://github.com/wenhao/parrot'
         issueTrackerUrl = 'https://github.com/wenhao/parrot/issues'
         vcsUrl = 'https://github.com/wenhao/parrot'
-        labels = ['jpa', 'spring-data']
+        labels = ['mock', 'stub']
         publicDownloadNumbers = true
         githubRepo = 'wenhao/parrot'
         githubReleaseNotesFile = 'README.md'
