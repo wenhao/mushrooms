@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GraphqlController {
 
-  @PostMapping("/graphql")
-  public ResponseEntity index() {
-    return ResponseEntity.status(500).build();
-  }
+    @PostMapping("/graphql")
+    public ResponseEntity index() {
+        return ResponseEntity.ok("getFromReal");
+    }
 }

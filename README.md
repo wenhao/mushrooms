@@ -1,3 +1,3 @@
-# mock-server
+# parrot
 
 Cacheable http server gateway
