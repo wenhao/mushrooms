@@ -1,6 +1,6 @@
 package com.github.wenhao.config;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -9,11 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-@AllArgsConstructor
-@ConditionalOnProperty(value = "parrot.cache.enabled", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
+@ConditionalOnProperty(value = "parrot.enabled", havingValue = "true", matchIfMissing = true)
 public class ParrotWebMvcConfig implements WebMvcConfigurer {
 
-    private ParrotHttpInterceptor parrotHttpInterceptor;
+    private final ParrotHttpInterceptor parrotHttpInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

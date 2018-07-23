@@ -3,6 +3,7 @@ package com.github.wenhao.config;
 import com.github.wenhao.domain.HttpResponse;
 import com.github.wenhao.repository.ParrotCacheRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "http.cache.enabled", havingValue = "true", matchIfMissing = true)
 public class ParrotHttpInterceptor extends HandlerInterceptorAdapter {
 
     private final ParrotCacheRepository parrotCacheRepository;

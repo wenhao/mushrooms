@@ -11,10 +11,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 @Configuration
-@ConditionalOnProperty(value = "http.cache.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "parrot.enabled", havingValue = "true", matchIfMissing = true)
 public class ParrotRedisConfiguration {
     @Bean
-    public RedisTemplate<String, Object> cacheRedisTemplate(
+    public RedisTemplate<String, Object> parrotRedisTemplate(
             RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -24,7 +24,7 @@ public class ParrotRedisConfiguration {
     }
 
     @Bean
-    public HashOperations<String, HttpRequest, HttpResponse> cacheHashOperations(
+    public HashOperations<String, HttpRequest, HttpResponse> parrotHashOperations(
             RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForHash();
     }

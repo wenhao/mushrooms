@@ -15,8 +15,7 @@ server:
   port: 8080
 
 parrot:
-  cache:
-    enabled: true
-    key: CACHE
-    headers:
-      - host
+  enabled: true
+  key: CACHE
+  headers:
+    - host

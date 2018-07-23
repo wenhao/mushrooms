@@ -7,6 +7,7 @@ import com.github.wenhao.domain.HttpRequest;
 import com.github.wenhao.domain.HttpResponse;
 import com.github.wenhao.domain.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -27,19 +28,19 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Repository
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "parrot.enabled", havingValue = "true", matchIfMissing = true)
 public class ParrotCacheRepository {
-    private static final String CACHE = "CACHE";
-    private final HashOperations<String, HttpRequest, HttpResponse> cacheHashOperations;
+    private final HashOperations<String, HttpRequest, HttpResponse> parrotHashOperations;
     private final ParrotConfiguration parrotConfiguration;
 
     public void save(HttpServletRequest request, HttpServletResponse response) {
         final HttpRequest httpRequest = getHttpRequest(request);
-        cacheHashOperations.put(parrotConfiguration.getKey(), httpRequest, getHttpResponse(response));
+        parrotHashOperations.put(parrotConfiguration.getKey(), httpRequest, getHttpResponse(response));
     }
 
     public HttpResponse get(HttpServletRequest request) {
         final HttpRequest httpRequest = getHttpRequest(request);
-        return cacheHashOperations.get(parrotConfiguration.getKey(), httpRequest);
+        return parrotHashOperations.get(parrotConfiguration.getKey(), httpRequest);
     }
 
     private HttpResponse getHttpResponse(HttpServletResponse response) {
