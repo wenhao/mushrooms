@@ -232,7 +232,7 @@ bintray {
                 passphrase = 'passphrase'
             }
             mavenCentralSync {
-                sync = true
+                sync = false
                 user = project.hasProperty('sonatypeUsername')
                 password = project.hasProperty('sonatypePassword')
                 close = '1'
