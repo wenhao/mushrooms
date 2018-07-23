@@ -118,3 +118,93 @@ jacocoTestCoverageVerification {
 }
 check.dependsOn jacocoTestCoverageVerification
 
+def pomConfig = {
+    licenses {
+        license {
+            name 'The Apache Software License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution 'repo'
+        }
+    }
+
+    scm {
+        url 'https://github.com/wenhao/parrot'
+        connection 'https://github.com/wenhao/parrot.git'
+        developerConnection 'git@github.com:wenhao/parrot.git'
+    }
+
+    developers {
+        developer {
+            id 'wenhao'
+            name 'Hao Wen'
+            email 'wenhao@126.com'
+            organization 'Hao Wen'
+            roles {
+                role 'Developer'
+            }
+        }
+    }
+
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.github.wenhao'
+            artifactId 'parrot'
+            version '3.2.3'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Cacheable http server gateway.')
+                root.appendNode('name', 'parrot')
+                root.appendNode('url', 'https://github.com/wenhao/parrot')
+                root.appendNode('inceptionYear', '2018')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+// publish to jcenter
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    configurations = ['archives']
+    publications = ['maven']
+    dryRun = false
+    publish = true
+    override = false
+    pkg {
+        repo = 'maven'
+        name = 'parrot'
+        desc = 'Cacheable http server gateway'
+        licenses = ['Apache-2.0']
+        websiteUrl = 'https://github.com/wenhao/parrot'
+        issueTrackerUrl = 'https://github.com/wenhao/parrot/issues'
+        vcsUrl = 'https://github.com/wenhao/parrot'
+        labels = ['jpa', 'spring-data']
+        publicDownloadNumbers = true
+        githubRepo = 'wenhao/parrot'
+        githubReleaseNotesFile = 'README.md'
+        version {
+            name = '1.0.0'
+            desc = 'Cacheable http server gateway 1.0.0'
+            released = new Date()
+            vcsTag = '1.0.0'
+            gpg {
+                sign = true
+                passphrase = 'passphrase'
+            }
+            mavenCentralSync {
+                sync = true
+                user = project.hasProperty('sonatypeUsername')
+                password = project.hasProperty('sonatypePassword')
+                close = '1'
+            }
+        }
+    }
+}
+
