@@ -1,7 +1,7 @@
 package com.github.wenhao.health;
 
-import org.springframework.http.client.ClientHttpResponse;
+import com.github.wenhao.interceptor.ClientHttpResponseWrapper;
 
 public interface HealthCheck {
-    boolean health(ClientHttpResponse response);
+    boolean health(ClientHttpResponseWrapper response);
 }
