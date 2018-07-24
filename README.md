@@ -95,5 +95,11 @@ public class CustomHealthCheck implements HealthCheck {
 }
 ```
 
+### Copyright and license
+
+Copyright © 2018 Wen Hao
+
+Licensed under [Apache License]
 
 [HttpStatusHealthCheck.java]: ./src/main/java/com/github/wenhao/health/HttpStatusHealthCheck.java
+[Apache License]: ./LICENSE
