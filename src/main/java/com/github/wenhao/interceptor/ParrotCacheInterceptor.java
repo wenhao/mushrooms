@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -29,7 +30,7 @@ public class ParrotCacheInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
-        ClientHttpResponse response = execution.execute(request, body);
+        ClientHttpResponse response = getRealResponse(request, body, execution);
         ClientHttpResponseWrapper responseWrapper = new ClientHttpResponseWrapper(response);
         CacheRequest cacheRequest = CacheRequest.builder()
                 .uri(request.getURI())
@@ -49,6 +50,17 @@ public class ParrotCacheInterceptor implements ClientHttpRequestInterceptor {
                         .body(item)
                         .build())
                 .orElse(new CachedClientHttpResponse(response));
+    }
+
+    private ClientHttpResponse getRealResponse(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
+        try {
+            return execution.execute(request, body);
+        } catch (Exception e) {
+            return CachedClientHttpResponse.builder()
+                    .httpStatus(INTERNAL_SERVER_ERROR)
+                    .httpHeaders(request.getHeaders())
+                    .build();
+        }
     }
 
     private List<Header> getHeaders(final HttpRequest request) {
