@@ -38,6 +38,8 @@ dependencies {
 
 #### application.yml
 
+Enabled parrot tools and set included headers.
+
 ```yaml
 parrot:
   enabled: true
