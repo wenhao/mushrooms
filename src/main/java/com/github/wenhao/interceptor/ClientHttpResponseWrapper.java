@@ -14,12 +14,11 @@ import java.io.InputStreamReader;
 import static java.util.stream.Collectors.joining;
 
 public class ClientHttpResponseWrapper implements ClientHttpResponse {
-    private final ClientHttpResponse response;
 
+    private final ClientHttpResponse response;
     private byte[] body;
 
-
-    ClientHttpResponseWrapper(ClientHttpResponse response) {
+    public ClientHttpResponseWrapper(final ClientHttpResponse response) {
         this.response = response;
     }
 
