@@ -38,7 +38,7 @@ public class ParrotCacheInterceptor implements ClientHttpRequestInterceptor {
                 .headers(getHeaders(request))
                 .body(new String(body))
                 .build();
-        boolean isHealth = healthChecks.stream().allMatch(healthCheck -> healthCheck.health(response));
+        boolean isHealth = healthChecks.stream().allMatch(healthCheck -> healthCheck.health(responseWrapper));
         if (isHealth) {
             parrotCacheRepository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
@@ -59,6 +59,7 @@ public class ParrotCacheInterceptor implements ClientHttpRequestInterceptor {
             return CachedClientHttpResponse.builder()
                     .httpStatus(INTERNAL_SERVER_ERROR)
                     .httpHeaders(request.getHeaders())
+                    .body("")
                     .build();
         }
     }
