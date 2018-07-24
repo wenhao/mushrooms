@@ -3,6 +3,7 @@ package com.github.wenhao.interceptor;
 import com.github.wenhao.config.ParrotConfiguration;
 import com.github.wenhao.domain.CacheRequest;
 import com.github.wenhao.domain.Header;
+import com.github.wenhao.health.HealthCheck;
 import com.github.wenhao.repository.ParrotCacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;
@@ -24,6 +25,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class ParrotCacheInterceptor implements ClientHttpRequestInterceptor {
     private final ParrotCacheRepository parrotCacheRepository;
     private final ParrotConfiguration parrotConfiguration;
+    private final List<HealthCheck> healthChecks;
 
     @Override
     public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
@@ -35,7 +37,8 @@ public class ParrotCacheInterceptor implements ClientHttpRequestInterceptor {
                 .headers(getHeaders(request))
                 .body(new String(body))
                 .build();
-        if (OK.equals(response.getStatusCode())) {
+        boolean isHealth = healthChecks.stream().allMatch(healthCheck -> healthCheck.health(response));
+        if (isHealth) {
             parrotCacheRepository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
         }
