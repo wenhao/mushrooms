@@ -15,9 +15,9 @@ import static java.util.Objects.isNull;
 @ConditionalOnProperty(value = "parrot.enabled", havingValue = "true", matchIfMissing = true)
 @Data
 public class ParrotConfiguration {
+    private String mapping;
     private String key;
     private List<String> headers;
-    private List<String> cookies;
 
     @PostConstruct
     public void init() {

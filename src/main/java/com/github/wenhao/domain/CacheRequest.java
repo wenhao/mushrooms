@@ -6,12 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.net.URI;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cookie implements Serializable {
-    private String name;
-    private String value;
+public class CacheRequest implements Serializable {
+    private URI uri;
+    private String method;
+    private String body;
+    private List<Header> headers;
 }

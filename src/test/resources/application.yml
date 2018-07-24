@@ -15,6 +15,7 @@ server:
   port: 8080
 
 parrot:
+  mapping: /parrot
   enabled: true
   key: CACHE
   headers:
