@@ -1,6 +1,6 @@
 package com.github.wenhao.okhttp.interceptor;
 
-import com.github.wenhao.common.config.CachingConfiguration;
+import com.github.wenhao.common.config.CachingConfigurationProperties;
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.common.repository.CachingRepository;
@@ -33,7 +33,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final CachingRepository cachingRepository;
-    private final CachingConfiguration cachingConfiguration;
+    private final CachingConfigurationProperties cachingConfigurationProperties;
     private final List<OkHttpClientHealthCheck> okHttpClientHealthChecks;
 
     @Override
@@ -53,8 +53,9 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
             cachingRepository.save(cacheRequest, getResponseBody(response.body()));
             return new Response.Builder()
                     .code(OK.value())
+                    .request(request)
                     .headers(response.headers())
-                    .body(ResponseBody.create(response.body().contentType(), cacheRequest.getBody()))
+                    .body(ResponseBody.create(response.body().contentType(), getResponseBody(response.body())))
                     .cacheResponse(response.cacheResponse())
                     .handshake(response.handshake())
                     .message(response.message())
@@ -68,6 +69,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         return Optional.ofNullable(cachingRepository.get(cacheRequest))
                 .map(bodyString -> new Response.Builder()
                         .code(OK.value())
+                        .request(request)
                         .headers(response.headers())
                         .body(ResponseBody.create(response.body().contentType(), bodyString))
                         .cacheResponse(response.cacheResponse())
@@ -80,6 +82,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                         .build())
                 .orElse(new Response.Builder()
                         .code(OK.value())
+                        .request(request)
                         .headers(response.headers())
                         .body(ResponseBody.create(response.body().contentType(), ""))
                         .cacheResponse(response.cacheResponse())
@@ -97,9 +100,9 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         final List<Header> headers = headerMap.keySet().stream()
                 .map(name -> Header.builder().name(name).values(headerMap.get(name)).build())
                 .collect(toList());
-        if (!isEmpty(cachingConfiguration.getHeaders())) {
+        if (!isEmpty(cachingConfigurationProperties.getHeaders())) {
             return headers.stream()
-                    .filter(header -> cachingConfiguration.getHeaders().contains(header.getName()))
+                    .filter(header -> cachingConfigurationProperties.getHeaders().contains(header.getName()))
                     .collect(toList());
         }
         return headers;

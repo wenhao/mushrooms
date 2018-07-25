@@ -1,6 +1,6 @@
 package com.github.wenhao.resttemplate.interceptor;
 
-import com.github.wenhao.common.config.CachingConfiguration;
+import com.github.wenhao.common.config.CachingConfigurationProperties;
 import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.resttemplate.health.RestTemplateHealthCheck;
@@ -25,7 +25,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 public class CachingRestTemplateInterceptor implements ClientHttpRequestInterceptor {
     private final CachingRepository cachingRepository;
-    private final CachingConfiguration cachingConfiguration;
+    private final CachingConfigurationProperties cachingConfigurationProperties;
     private final List<RestTemplateHealthCheck> restTemplateHealthChecks;
 
     @Override
@@ -68,9 +68,9 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
         List<Header> headers = request.getHeaders().keySet().stream()
                 .map(key -> Header.builder().name(key).values(request.getHeaders().get(key)).build())
                 .collect(toList());
-        if (!isEmpty(cachingConfiguration.getHeaders())) {
+        if (!isEmpty(cachingConfigurationProperties.getHeaders())) {
             return headers.stream()
-                    .filter(header -> cachingConfiguration.getHeaders().contains(header.getName()))
+                    .filter(header -> cachingConfigurationProperties.getHeaders().contains(header.getName()))
                     .collect(toList());
         }
         return headers;

@@ -1,6 +1,6 @@
 package com.github.wenhao.common.repository;
 
-import com.github.wenhao.common.config.CachingConfiguration;
+import com.github.wenhao.common.config.CachingConfigurationProperties;
 import com.github.wenhao.common.domain.Request;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +18,16 @@ public class CachingRepository {
     @Qualifier("cachingHashOperations")
     private HashOperations<String, Request, String> cachingHashOperations;
     @Autowired
-    private CachingConfiguration cachingConfiguration;
+    private CachingConfigurationProperties cachingConfigurationProperties;
 
     public void save(Request request, String responseBody) {
-        cachingHashOperations.put(cachingConfiguration.getKey(), request, responseBody);
+        cachingHashOperations.put(cachingConfigurationProperties.getKey(), request, responseBody);
         log.info("[Parrot]Refresh cached data.");
     }
 
     public String get(Request request) {
         log.info("[Parrot]Respond with cached data.");
-        return cachingHashOperations.get(cachingConfiguration.getKey(), request);
+        return cachingHashOperations.get(cachingConfigurationProperties.getKey(), request);
     }
 
 }
