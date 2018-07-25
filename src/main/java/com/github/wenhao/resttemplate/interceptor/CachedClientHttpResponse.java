@@ -1,4 +1,4 @@
-package com.github.wenhao.interceptor;
+package com.github.wenhao.resttemplate.interceptor;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

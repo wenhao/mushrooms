@@ -1,6 +1,6 @@
-package com.github.wenhao.health;
+package com.github.wenhao.resttemplate.health;
 
-import com.github.wenhao.interceptor.ClientHttpResponseWrapper;
+import com.github.wenhao.resttemplate.interceptor.ClientHttpResponseWrapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

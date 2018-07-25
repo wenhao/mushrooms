@@ -1,10 +1,10 @@
-package com.github.wenhao.interceptor;
+package com.github.wenhao.resttemplate.interceptor;
 
-import com.github.wenhao.config.ParrotConfiguration;
-import com.github.wenhao.domain.CacheRequest;
-import com.github.wenhao.domain.Header;
-import com.github.wenhao.health.RestTemplateHealthCheck;
-import com.github.wenhao.repository.ParrotCacheRepository;
+import com.github.wenhao.common.config.CachingConfiguration;
+import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.common.domain.Header;
+import com.github.wenhao.resttemplate.health.RestTemplateHealthCheck;
+import com.github.wenhao.common.repository.CachingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -23,16 +23,16 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Component
 @RequiredArgsConstructor
-public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
-    private final ParrotCacheRepository parrotCacheRepository;
-    private final ParrotConfiguration parrotConfiguration;
+public class CachingRestTemplateInterceptor implements ClientHttpRequestInterceptor {
+    private final CachingRepository cachingRepository;
+    private final CachingConfiguration cachingConfiguration;
     private final List<RestTemplateHealthCheck> restTemplateHealthChecks;
 
     @Override
     public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
         ClientHttpResponse response = getRealResponse(request, body, execution);
         ClientHttpResponseWrapper responseWrapper = new ClientHttpResponseWrapper(response);
-        CacheRequest cacheRequest = CacheRequest.builder()
+        Request cacheRequest = Request.builder()
                 .uri(request.getURI())
                 .method(request.getMethodValue())
                 .headers(getHeaders(request))
@@ -40,10 +40,10 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
                 .build();
         boolean isHealth = restTemplateHealthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
-            parrotCacheRepository.save(cacheRequest, responseWrapper.getBodyAsString());
+            cachingRepository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
         }
-        return Optional.ofNullable(parrotCacheRepository.get(cacheRequest))
+        return Optional.ofNullable(cachingRepository.get(cacheRequest))
                 .map(item -> CachedClientHttpResponse.builder()
                         .httpStatus(OK)
                         .httpHeaders(response.getHeaders())
@@ -68,9 +68,9 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         List<Header> headers = request.getHeaders().keySet().stream()
                 .map(key -> Header.builder().name(key).values(request.getHeaders().get(key)).build())
                 .collect(toList());
-        if (!isEmpty(parrotConfiguration.getHeaders())) {
+        if (!isEmpty(cachingConfiguration.getHeaders())) {
             return headers.stream()
-                    .filter(header -> parrotConfiguration.getHeaders().contains(header.getName()))
+                    .filter(header -> cachingConfiguration.getHeaders().contains(header.getName()))
                     .collect(toList());
         }
         return headers;

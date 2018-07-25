@@ -1,6 +1,6 @@
-package com.github.wenhao.config;
+package com.github.wenhao.resttemplate.config;
 
-import com.github.wenhao.interceptor.RestTemplateInterceptor;
+import com.github.wenhao.resttemplate.interceptor.CachingRestTemplateInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -12,18 +12,18 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Configuration
-@ConditionalOnProperty(value = "parrot.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "parrot.resttemplate.enabled", havingValue = "true")
 @RequiredArgsConstructor
-public class RestTemplatePostProcessor implements BeanPostProcessor {
+public class CachingRestTemplatePostProcessor implements BeanPostProcessor {
 
-    private final RestTemplateInterceptor restTemplateInterceptor;
+    private final CachingRestTemplateInterceptor cachingRestTemplateInterceptor;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof RestTemplate) {
             final RestTemplate restTemplate = (RestTemplate) bean;
             List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
-            interceptors.add(restTemplateInterceptor);
+            interceptors.add(cachingRestTemplateInterceptor);
             restTemplate.setInterceptors(interceptors);
             return restTemplate;
         }

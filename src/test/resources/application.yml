@@ -14,9 +14,23 @@ spring:
 server:
   port: 8080
 
+feign:
+  hystrix:
+    enabled: false
+  okhttp:
+    okhttp: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+
 parrot:
-  mapping: /parrot
-  enabled: true
-  key: CACHE
+  resttemplate:
+    enabled: true
+  okhttp:
+    enabled: true
+  key: PARROT-CACHE
   headers:
     - host

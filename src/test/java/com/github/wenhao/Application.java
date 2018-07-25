@@ -1,6 +1,6 @@
 package com.github.wenhao;
 
-import com.github.wenhao.interceptor.RestTemplateInterceptor;
+import com.github.wenhao.resttemplate.interceptor.CachingRestTemplateInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class Application {
 
     @Autowired
-    private RestTemplateInterceptor restTemplateInterceptor;
+    private CachingRestTemplateInterceptor cachingRestTemplateInterceptor;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -24,7 +24,7 @@ public class Application {
     @Bean
     public RestTemplate restTemplate() {
         final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setInterceptors(Stream.of(restTemplateInterceptor).collect(toList()));
+        restTemplate.setInterceptors(Stream.of(cachingRestTemplateInterceptor).collect(toList()));
         return restTemplate;
     }
 }
