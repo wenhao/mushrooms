@@ -31,6 +31,7 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.apache.commons:commons-pool2'
     compileOnly 'org.projectlombok:lombok:1.18.0'
+    compileOnly "io.github.openfeign:feign-okhttp:9.7.0"
     annotationProcessor 'org.projectlombok:lombok:1.18.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-web'

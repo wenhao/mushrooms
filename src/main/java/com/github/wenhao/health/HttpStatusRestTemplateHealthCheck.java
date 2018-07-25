@@ -8,7 +8,7 @@ import java.io.IOException;
 import static org.springframework.http.HttpStatus.OK;
 
 @Component
-public class HttpStatusHealthCheck implements HealthCheck {
+public class HttpStatusRestTemplateHealthCheck implements RestTemplateHealthCheck {
 
     @Override
     public boolean health(final ClientHttpResponseWrapper response) {

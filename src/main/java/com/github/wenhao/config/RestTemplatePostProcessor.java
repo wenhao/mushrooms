@@ -1,6 +1,6 @@
 package com.github.wenhao.config;
 
-import com.github.wenhao.interceptor.ParrotCacheInterceptor;
+import com.github.wenhao.interceptor.RestTemplateInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -16,14 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestTemplatePostProcessor implements BeanPostProcessor {
 
-    private final ParrotCacheInterceptor parrotCacheInterceptor;
+    private final RestTemplateInterceptor restTemplateInterceptor;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof RestTemplate) {
             final RestTemplate restTemplate = (RestTemplate) bean;
             List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
-            interceptors.add(parrotCacheInterceptor);
+            interceptors.add(restTemplateInterceptor);
             restTemplate.setInterceptors(interceptors);
             return restTemplate;
         }
