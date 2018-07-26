@@ -133,7 +133,7 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
             if (contentType != null) {
                 charset = contentType.charset(UTF8);
             }
-            return buffer.readString(charset);
+            return buffer.clone.readString(charset);
         } catch (IOException e) {
             return "";
         }
