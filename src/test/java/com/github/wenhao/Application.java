@@ -1,30 +1,25 @@
 package com.github.wenhao;
 
-import com.github.wenhao.resttemplate.interceptor.CachingRestTemplateInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-
 @SpringBootApplication
+@ComponentScan("com.github.wenhao")
+@Configuration
 public class Application {
-
-    @Autowired
-    private CachingRestTemplateInterceptor cachingRestTemplateInterceptor;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "mushrooms.failover.okhttp", name = "enabled", havingValue = "true")
     public RestTemplate restTemplate() {
-        final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setInterceptors(Stream.of(cachingRestTemplateInterceptor).collect(toList()));
-        return restTemplate;
+        return new RestTemplate();
     }
 }

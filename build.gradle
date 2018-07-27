@@ -38,11 +38,17 @@ dependencies {
     compileOnly "org.springframework.cloud:spring-cloud-starter-openfeign"
     compileOnly 'org.projectlombok:lombok:1.18.0'
     compileOnly "io.github.openfeign:feign-okhttp:9.7.0"
-    annotationProcessor 'org.projectlombok:lombok:1.18.2'
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    testImplementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    testImplementation "io.github.openfeign:feign-core:9.7.0"
+    testImplementation 'org.projectlombok:lombok:1.18.0'
+    testImplementation "io.github.openfeign:feign-okhttp:9.7.0"
     testImplementation 'org.apache.commons:commons-pool2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core:3.10.0'

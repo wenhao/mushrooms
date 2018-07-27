@@ -1,9 +1,7 @@
-package com.github.wenhao.okhttp.health;
+package com.github.wenhao.failover.okhttp.health;
 
 import okhttp3.Response;
-import org.springframework.stereotype.Component;
 
-@Component
 public class HttpStatusOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
 
     @Override

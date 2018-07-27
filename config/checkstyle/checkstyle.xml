@@ -4,36 +4,38 @@
 
 <module name="Checker">
     <!-- 检查property文件中是否有相同的key -->
-    <module name="Translation" />
+    <module name="Translation"/>
 
     <!-- 检查文件是否以一个空行结束 -->
     <module name="NewlineAtEndOfFile">
-        <property name="lineSeparator" value="lf" />
+        <property name="lineSeparator" value="lf"/>
     </module>
 
     <!-- 文件长度不超过200行 -->
-    <module name="FileLength" >
+    <module name="FileLength">
         <property name="max" value="200"/>
         <property name="severity" value="error"/>
     </module>
 
     <!-- 检查文件中是否含有'\t' -->
-    <module name="FileTabCharacter" />
+    <module name="FileTabCharacter"/>
 
     <!-- 各种各样的其他检查 -->
     <module name="RegexpSingleline">
         <!-- Checks that FIXME is not used in comments.  TODO is preferred.
         -->
-        <property name="format" value="((//.*)|(\*.*))FIXME" />
-        <property name="message" value='TODO is preferred to FIXME.  e.g. "TODO(johndoe): Refactor when v2 is released."' />
+        <property name="format" value="((//.*)|(\*.*))FIXME"/>
+        <property name="message"
+                  value='TODO is preferred to FIXME.  e.g. "TODO(johndoe): Refactor when v2 is released."'/>
     </module>
 
     <module name="RegexpSingleline">
         <!-- Checks that TODOs are named.  (Actually, just that they are followed
              by an open paren.)
         -->
-        <property name="format" value="((//.*)|(\*.*))TODO[^(]" />
-        <property name="message" value='All TODOs should be named.  e.g. "TODO(johndoe): Refactor when v2 is released."' />
+        <property name="format" value="((//.*)|(\*.*))TODO[^(]"/>
+        <property name="message"
+                  value='All TODOs should be named.  e.g. "TODO(johndoe): Refactor when v2 is released."'/>
     </module>
 
     <!-- 每个java文件一个语法树 -->
@@ -41,12 +43,12 @@
         <!-- 使filecontentolder允许我们反过来对压制评论 -->
         <!--<module token="FileContentsHolder" />-->
 
-        <property name="cacheFile" value="checkstyle.cache" />
+        <property name="cacheFile" value="checkstyle.cache"/>
 
-        <property name="tabWidth" value="4" />
+        <property name="tabWidth" value="4"/>
 
         <!-- only check java files. -->
-        <property name="fileExtensions" value="java" />
+        <property name="fileExtensions" value="java"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
@@ -120,7 +122,7 @@
         </module>
 
         <module name="PackageName">
-            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
         </module>
 
         <module name="LocalFinalVariableName">
@@ -143,20 +145,20 @@
         </module>
 
         <!-- Import check -->
-        <module name="AvoidStarImport" />
-        <module name="IllegalImport" />
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/>
         <module name="RedundantImport">
             <!-- Checks for redundant import statements. -->
             <property name="severity" value="error"/>
         </module>
         <module name="UnusedImports"/>
         <!--<module name="ImportOrder">-->
-            <!-- Checks for out of order import statements. -->
-            <!--<property name="severity" value="warning"/>-->
-            <!--<property name="groups" value="java,javax,org,net,com"/>-->
-            <!-- This ensures that static imports go first. -->
-            <!--<property name="option" value="top"/>-->
-            <!--<property name="tokens" value="STATIC_IMPORT, IMPORT"/>-->
+        <!-- Checks for out of order import statements. -->
+        <!--<property name="severity" value="warning"/>-->
+        <!--<property name="groups" value="java,javax,org,net,com"/>-->
+        <!-- This ensures that static imports go first. -->
+        <!--<property name="option" value="top"/>-->
+        <!--<property name="tokens" value="STATIC_IMPORT, IMPORT"/>-->
         <!--</module>-->
 
         <!-- Length check -->
@@ -179,7 +181,7 @@
             <property name="tokens" value="METHOD_DEF"/>
             <property name="max" value="20"/>
             <property name="countEmpty" value="false"/>
-            <property name="severity" value="warning" />
+            <property name="severity" value="warning"/>
         </module>
         <module name="ParameterNumber">
             <property name="max" value="5"/>
@@ -252,15 +254,15 @@
         <module name="OperatorWrap">
             <property name="option" value="eol"/>
             <property name="tokens"
-                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, QUESTION, SL, SR, STAR" />
+                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, QUESTION, SL, SR, STAR"/>
         </module>
         <module name="OperatorWrap">
             <property name="option" value="nl"/>
             <property name="tokens" value="COLON"/>
         </module>
 
-        <module name="ParenPad" />
-        <module name="TypecastParenPad" />
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter">
             <!-- Checks that commas, semicolons and typecasts are followed by
                  whitespace.
@@ -280,45 +282,45 @@
               -->
         </module>
         <module name="RedundantModifier"/>
-        <module name="EmptyBlock" />
-        <module name="NeedBraces" />
-        <module name="RightCurly" />
-        <module name="AvoidNestedBlocks" />
+        <module name="EmptyBlock"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+        <module name="AvoidNestedBlocks"/>
 
-        <module name="CovariantEquals" />
-        <module name="EmptyStatement" />
-        <module name="EqualsHashCode" />
+        <module name="CovariantEquals"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
         <module name="IllegalInstantiation">
             <property name="classes" value="java.lang.Boolean"/>
         </module>
-        <module name="InnerAssignment" />
-        <module name="MissingSwitchDefault" />
+        <module name="InnerAssignment"/>
+        <module name="MissingSwitchDefault"/>
         <!--<module token="RedundantThrows" />-->
-        <module name="SimplifyBooleanReturn" />
-        <module name="StringLiteralEquality" />
-        <module name="NestedIfDepth" >
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="NestedIfDepth">
             <property name="max" value="1"/>
         </module>
         <module name="NestedTryDepth">
             <property name="max" value="1"/>
         </module>
         <module name="SuperClone"/>
-        <module name="SuperFinalize" />
-        <module name="PackageDeclaration" />
+        <module name="SuperFinalize"/>
+        <module name="PackageDeclaration"/>
         <!--<module token="JUnitTestCase" />-->
-        <module name="ReturnCount" >
+        <module name="ReturnCount">
             <property name="max" value="2"/>
         </module>
         <module name="IllegalType"/>
         <!--<module name="DeclarationOrder" />-->
-        <module name="ParameterAssignment" />
-        <module name="VisibilityModifier" />
-        <module name="FinalClass" />
-        <module name="InterfaceIsType" >
+        <module name="ParameterAssignment"/>
+        <module name="VisibilityModifier"/>
+        <module name="FinalClass"/>
+        <module name="InterfaceIsType">
             <property name="allowMarkerInterfaces" value="true"/>
         </module>
         <!--<module token="HideUtilityClassConstructor" />-->
-        <module name="MutableException" />
+        <module name="MutableException"/>
         <module name="ThrowsCount">
             <property name="max" value="3"/>
         </module>
@@ -326,7 +328,7 @@
             <property name="max" value="7"/>
         </module>
         <module name="UpperEll"/>
-        <module name="ArrayTypeStyle" />
+        <module name="ArrayTypeStyle"/>
 
         <module name="AnnotationLocation">
             <property name="id" value="AnnotationLocationMostCases"/>
@@ -338,9 +340,22 @@
             <property name="allowSamelineMultipleAnnotations" value="true"/>
         </module>
         <module name="SuppressionCommentFilter">
-            <property name="offCommentFormat" value="CHECKSTYLE\:OFF ([\w\|]+)" />
-            <property name="onCommentFormat" value="CHECKSTYLE\:ON ([\w\|]+)" />
-            <property name="checkFormat" value="$1" />
+            <property name="offCommentFormat" value="CHECKSTYLE\:OFF ([\w\|]+)"/>
+            <property name="onCommentFormat" value="CHECKSTYLE\:ON ([\w\|]+)"/>
+            <property name="checkFormat" value="$1"/>
         </module>
+        <module name="SuppressWarnings">
+            <property name="format" value="^((?!unchecked|deprecation|rawtypes|resource).)*$"/>
+            <message key="suppressed.warning.not.allowed"
+                     value="The warning ''{0}'' cannot be suppressed at this location.
+             Only few javac warnings are allowed to suppress.
+             If try to suppress checkstyle/pmd/..... violation please do this in their config file.
+             If you try to suppress IntelliJ IDEA inspection,
+             please use javadoc block tag @noinspection"
+            />
+        </module>
+        <module name="SuppressWarningsHolder"/>
+        <!--<module name="SuppressWarningsFilter"/>-->
+        <!--<module name="SuppressWithPlainTextCommentFilter">-->
     </module>
 </module>

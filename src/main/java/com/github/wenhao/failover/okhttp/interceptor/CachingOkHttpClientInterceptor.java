@@ -1,10 +1,10 @@
-package com.github.wenhao.okhttp.interceptor;
+package com.github.wenhao.failover.okhttp.interceptor;
 
-import com.github.wenhao.common.config.CachingConfigurationProperties;
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.common.repository.CachingRepository;
-import com.github.wenhao.okhttp.health.OkHttpClientHealthCheck;
+import com.github.wenhao.failover.repository.FailoverRepository;
+import com.github.wenhao.failover.okhttp.health.OkHttpClientHealthCheck;
+import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
@@ -14,8 +14,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -28,15 +26,13 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
-@Component
-@ConditionalOnProperty(value = "mushrooms.okhttp.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class CachingOkHttpClientInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
-    private final CachingRepository cachingRepository;
-    private final CachingConfigurationProperties cachingConfigurationProperties;
-    private final List<OkHttpClientHealthCheck> okHttpClientHealthChecks;
+    private final FailoverRepository repository;
+    private final MushroomsFailoverConfigurationProperties properties;
+    private final List<OkHttpClientHealthCheck> healthChecks;
 
     @Override
     public Response intercept(final Chain chain) throws IOException {
@@ -50,10 +46,10 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .build();
 
         final Response response = chain.proceed(request);
-        boolean isHealth = okHttpClientHealthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
+        boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
             log.info("[MUSHROOMS]Refresh cached data for {}.", cacheRequest.toString());
-            cachingRepository.save(cacheRequest, getResponseBody(response.body()));
+            repository.save(cacheRequest, getResponseBody(response.body()));
             return new Response.Builder()
                     .code(OK.value())
                     .request(request)
@@ -70,7 +66,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         }
 
         log.info("[MUSHROOMS]Respond with cached data for {}.", cacheRequest.toString());
-        return Optional.ofNullable(cachingRepository.get(cacheRequest))
+        return Optional.ofNullable(repository.get(cacheRequest))
                 .map(bodyString -> new Response.Builder()
                         .code(OK.value())
                         .request(request)
@@ -104,9 +100,9 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         final List<Header> headers = headerMap.keySet().stream()
                 .map(name -> Header.builder().name(name).values(headerMap.get(name)).build())
                 .collect(toList());
-        if (!isEmpty(cachingConfigurationProperties.getHeaders())) {
+        if (!isEmpty(properties.getHeaders())) {
             return headers.stream()
-                    .filter(header -> cachingConfigurationProperties.getHeaders().contains(header.getName()))
+                    .filter(header -> properties.getHeaders().contains(header.getName()))
                     .collect(toList());
         }
         return headers;

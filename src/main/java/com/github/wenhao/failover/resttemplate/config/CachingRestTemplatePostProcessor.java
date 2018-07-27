@@ -1,18 +1,14 @@
-package com.github.wenhao.resttemplate.config;
+package com.github.wenhao.failover.resttemplate.config;
 
-import com.github.wenhao.resttemplate.interceptor.CachingRestTemplateInterceptor;
+import com.github.wenhao.failover.resttemplate.interceptor.CachingRestTemplateInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-@Configuration
-@ConditionalOnProperty(value = "mushrooms.resttemplate.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class CachingRestTemplatePostProcessor implements BeanPostProcessor {
 

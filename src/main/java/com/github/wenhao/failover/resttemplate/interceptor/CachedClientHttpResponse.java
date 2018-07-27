@@ -1,4 +1,4 @@
-package com.github.wenhao.resttemplate.interceptor;
+package com.github.wenhao.failover.resttemplate.interceptor;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -18,7 +18,7 @@ feign:
   hystrix:
     enabled: false
   okhttp:
-    okhttp: true
+    enabled: true
   client:
     config:
       default:
@@ -27,10 +27,10 @@ feign:
         loggerLevel: full
 
 mushrooms:
-  resttemplate:
-    enabled: true
-  okhttp:
-    enabled: true
-  key: PARROT-CACHE
-  headers:
-    - host
+  failover:
+    okhttp:
+      enabled: true
+    resttemplate:
+      enabled: false
+    headers:
+      - content-type

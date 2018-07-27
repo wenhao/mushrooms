@@ -1,13 +1,11 @@
-package com.github.wenhao.resttemplate.health;
+package com.github.wenhao.failover.resttemplate.health;
 
-import com.github.wenhao.resttemplate.interceptor.ClientHttpResponseWrapper;
-import org.springframework.stereotype.Component;
+import com.github.wenhao.failover.resttemplate.interceptor.ClientHttpResponseWrapper;
 
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.OK;
 
-@Component
 public class HttpStatusRestTemplateHealthCheck implements RestTemplateHealthCheck {
 
     @Override

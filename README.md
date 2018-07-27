@@ -120,29 +120,12 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
     
     @Override
     public boolean health(final Response response) {
-        final String body = getResponseBody(response.body());
+        final String body = getResponseBody(response);
         try {
             final JSONObject jsonObject = new JSONObject(body);
-            final boolean isSuccess = jsonObject.getBoolean("success");
-            return isSuccess;
+            return jsonObject.getBoolean("success");
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    private String getResponseBody(final ResponseBody responseBody) {
-        try {
-            BufferedSource source = responseBody.source();
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.buffer();
-            Charset charset = UTF8;
-            MediaType contentType = responseBody.contentType();
-            if (contentType != null) {
-                charset = contentType.charset(UTF8);
-            }
-            return buffer.clone.readString(charset);
-        } catch (IOException e) {
-            return "";
         }
     }
 }

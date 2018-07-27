@@ -1,17 +1,16 @@
-package com.github.wenhao.resttemplate.interceptor;
+package com.github.wenhao.failover.resttemplate.interceptor;
 
-import com.github.wenhao.common.config.CachingConfigurationProperties;
-import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.common.domain.Header;
-import com.github.wenhao.resttemplate.health.RestTemplateHealthCheck;
-import com.github.wenhao.common.repository.CachingRepository;
+import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.failover.repository.FailoverRepository;
+import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
+import com.github.wenhao.failover.resttemplate.health.RestTemplateHealthCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,12 +22,12 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class CachingRestTemplateInterceptor implements ClientHttpRequestInterceptor {
-    private final CachingRepository cachingRepository;
-    private final CachingConfigurationProperties cachingConfigurationProperties;
-    private final List<RestTemplateHealthCheck> restTemplateHealthChecks;
+
+    private final FailoverRepository repository;
+    private final MushroomsFailoverConfigurationProperties properties;
+    private final List<RestTemplateHealthCheck> healthChecks;
 
     @Override
     public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
@@ -40,14 +39,14 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                 .headers(getHeaders(request))
                 .body(new String(body))
                 .build();
-        boolean isHealth = restTemplateHealthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
+        boolean isHealth = healthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
             log.info("[MUSHROOMS]Refresh cached data for {}.", cacheRequest.toString());
-            cachingRepository.save(cacheRequest, responseWrapper.getBodyAsString());
+            repository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
         }
         log.info("[MUSHROOMS]Respond with cached data for {}.", cacheRequest.toString());
-        return Optional.ofNullable(cachingRepository.get(cacheRequest))
+        return Optional.ofNullable(repository.get(cacheRequest))
                 .map(item -> CachedClientHttpResponse.builder()
                         .httpStatus(OK)
                         .httpHeaders(response.getHeaders())
@@ -72,9 +71,9 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
         List<Header> headers = request.getHeaders().keySet().stream()
                 .map(key -> Header.builder().name(key).values(request.getHeaders().get(key)).build())
                 .collect(toList());
-        if (!isEmpty(cachingConfigurationProperties.getHeaders())) {
+        if (!isEmpty(properties.getHeaders())) {
             return headers.stream()
-                    .filter(header -> cachingConfigurationProperties.getHeaders().contains(header.getName()))
+                    .filter(header -> properties.getHeaders().contains(header.getName()))
                     .collect(toList());
         }
         return headers;
