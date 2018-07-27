@@ -11,6 +11,7 @@ Cacheable http server gateway
 ### Features
 
 * RestTemplate Cache.
+* Okhttp Cache with OpenFeign.
 
 ### Gradle
 

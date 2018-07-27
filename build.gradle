@@ -48,6 +48,10 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.10.0'
 }
 
+compileJava {
+    options.incremental = true
+}
+
 repositories {
     jcenter()
 }
