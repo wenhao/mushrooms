@@ -11,7 +11,7 @@ import static java.util.Objects.isNull;
 
 @Data
 @Configuration
-@ConfigurationProperties("parrot")
+@ConfigurationProperties("mushrooms")
 public class CachingConfigurationProperties {
     private String key;
     private List<String> headers;
@@ -19,7 +19,7 @@ public class CachingConfigurationProperties {
     @PostConstruct
     public void init() {
         if (isNull(key)) {
-            key = "PARROT-CACHE";
+            key = "MUSHROOMS-CACHE";
         }
     }
 }

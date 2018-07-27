@@ -7,9 +7,9 @@ blue='\033[0;34m'
 NC='\033[0m' # No colors
 
 # Regex & Usage
-commit_regex="^(\[((MOCK-[0-9]+)|(TECH))\]\[\S+(\s\&\s\S+)*\]|merge)\s"
-error_message="Aborting commit. Commit message must start with ${yellow}[MOCK-#ID][YOUR NAME]."
-usage="[MOCK-#ID][YOUR NAME] Commit Message."
+commit_regex="^(\[((MUSHROOMS-[0-9]+)|(TECH))\]\[\S+(\s\&\s\S+)*\]|merge)\s"
+error_message="Aborting commit. Commit message must start with ${yellow}[MUSHROOMS-#ID][YOUR NAME]."
+usage="[MUSHROOMS-#ID][YOUR NAME] Commit Message."
 
 if ! grep -qE "$commit_regex" "$1"; then
   printf "${red}$error_message\n"

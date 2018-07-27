@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-@ConditionalOnProperty(value = "parrot.okhttp.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "mushrooms.okhttp.enabled", havingValue = "true")
 public class CachingOkHttpClientConfiguration {
 
     @Autowired

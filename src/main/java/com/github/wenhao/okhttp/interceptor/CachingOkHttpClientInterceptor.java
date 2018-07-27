@@ -29,7 +29,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(value = "parrot.okhttp.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "mushrooms.okhttp.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class CachingOkHttpClientInterceptor implements Interceptor {
 
@@ -52,7 +52,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         final Response response = chain.proceed(request);
         boolean isHealth = okHttpClientHealthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
-            log.info("[PARROT]Refresh cached data for {}.", cacheRequest.toString());
+            log.info("[MUSHROOMS]Refresh cached data for {}.", cacheRequest.toString());
             cachingRepository.save(cacheRequest, getResponseBody(response.body()));
             return new Response.Builder()
                     .code(OK.value())
@@ -69,7 +69,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .build();
         }
 
-        log.info("[PARROT]Respond with cached data for {}.", cacheRequest.toString());
+        log.info("[MUSHROOMS]Respond with cached data for {}.", cacheRequest.toString());
         return Optional.ofNullable(cachingRepository.get(cacheRequest))
                 .map(bodyString -> new Response.Builder()
                         .code(OK.value())

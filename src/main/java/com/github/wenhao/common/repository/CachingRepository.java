@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@ConditionalOnExpression("${parrot.resttemplate.enabled:true} || ${parrot.okhttp.enabled:true}")
+@ConditionalOnExpression("${mushrooms.resttemplate.enabled:true} || ${mushrooms.okhttp.enabled:true}")
 public class CachingRepository {
 
     @Autowired

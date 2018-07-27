@@ -1,8 +1,10 @@
-[![Build Status](https://travis-ci.com/wenhao/parrot.svg?branch=master)](https://travis-ci.com/wenhao/parrot)
-[![Coverage Status](https://coveralls.io/repos/github/wenhao/parrot/badge.svg?branch=master)](https://coveralls.io/github/wenhao/parrot?branch=master)
+[![Build Status](https://travis-ci.com/wenhao/mushrooms.svg?branch=master)](https://travis-ci.com/wenhao/mushrooms)
+[![Coverage Status](https://coveralls.io/repos/github/wenhao/mushrooms/badge.svg?branch=master)](https://coveralls.io/github/wenhao/mushrooms?branch=master)
 [![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-# Parrot
+![Mushrooms][logo]
+
+# Mushrooms
 
 Cacheable http server gateway
 
@@ -18,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:parrot:2.1.3'
+    compile 'com.github.wenhao:mushrooms:2.1.3'
 }
 ```
 
@@ -27,7 +29,7 @@ dependencies {
 ```xml
 <dependency>
     <groupId>com.github.wenhao</groupId>
-    <artifactId>parrot</artifactId>
+    <artifactId>mushrooms</artifactId>
     <version>2.1.3</version>
 </dependency>
 ```
@@ -42,15 +44,15 @@ dependencies {
 
 #### application.yml
 
-Enabled parrot tools and set included headers.
+Enabled mushrooms tools and set included headers.
 
 ```yaml
-parrot:
+mushrooms:
   resttemplate:
     enabled: true
   okhttp:
     enabled: true
-  key: PARROT-CACHE
+  key: MUSHROOMS-CACHE
   headers:
     - content-type
     - application-specific
@@ -151,6 +153,7 @@ Copyright © 2018 Wen Hao
 
 Licensed under [Apache License]
 
+[logo]: ./docs/images/logo.png
 [HttpStatusRestTemplateHealthCheck.java]: ./src/main/java/com/github/wenhao/resttemplate/health/HttpStatusRestTemplateHealthCheck.java
 [HttpStatusOkHttpClientHealthCheck.java]: ./src/main/java/com/github/wenhao/okhttp/health/HttpStatusOkHttpClientHealthCheck.java
 [Apache License]: ./LICENSE

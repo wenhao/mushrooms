@@ -11,17 +11,17 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@ConditionalOnExpression("${parrot.resttemplate.enabled:true} || ${parrot.okhttp.enabled:true}")
+@ConditionalOnExpression("${mushrooms.resttemplate.enabled:true} || ${mushrooms.okhttp.enabled:true}")
 public class CachingConfiguration {
 
-    @Bean("cachingHashOperations")
-    public HashOperations<String, Request, String> cacheHashOperations(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Request.class));
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate.opsForHash();
-    }
+  @Bean("cachingHashOperations")
+  public HashOperations<String, Request, String> cacheHashOperations(RedisConnectionFactory redisConnectionFactory) {
+    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    redisTemplate.setConnectionFactory(redisConnectionFactory);
+    redisTemplate.setKeySerializer(new StringRedisSerializer());
+    redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Request.class));
+    redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+    redisTemplate.afterPropertiesSet();
+    return redisTemplate.opsForHash();
+  }
 }

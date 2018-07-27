@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Configuration
-@ConditionalOnProperty(value = "parrot.resttemplate.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "mushrooms.resttemplate.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class CachingRestTemplatePostProcessor implements BeanPostProcessor {
 

@@ -38,7 +38,7 @@ dependencies {
     compileOnly "org.springframework.cloud:spring-cloud-starter-openfeign"
     compileOnly 'org.projectlombok:lombok:1.18.0'
     compileOnly "io.github.openfeign:feign-okhttp:9.7.0"
-    annotationProcessor 'org.projectlombok:lombok:1.18.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
     implementation 'com.google.code.gson:gson:2.8.5'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
@@ -170,9 +170,9 @@ def pomConfig = {
     }
 
     scm {
-        url 'https://github.com/wenhao/parrot'
-        connection 'https://github.com/wenhao/parrot.git'
-        developerConnection 'git@github.com:wenhao/parrot.git'
+        url 'https://github.com/wenhao/mushrooms'
+        connection 'https://github.com/wenhao/mushrooms.git'
+        developerConnection 'git@github.com:wenhao/mushrooms.git'
     }
 
     developers {
@@ -195,13 +195,13 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
             groupId 'com.github.wenhao'
-            artifactId 'parrot'
+            artifactId 'mushrooms'
             version '2.1.3'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Cacheable http server gateway.')
-                root.appendNode('name', 'parrot')
-                root.appendNode('url', 'https://github.com/wenhao/parrot')
+                root.appendNode('name', 'mushrooms')
+                root.appendNode('url', 'https://github.com/wenhao/mushrooms')
                 root.appendNode('inceptionYear', '2018')
                 root.children().last() + pomConfig
             }
@@ -220,15 +220,15 @@ bintray {
     override = false
     pkg {
         repo = 'maven'
-        name = 'parrot'
+        name = 'mushrooms'
         desc = 'Cacheable http server gateway.'
         licenses = ['Apache-2.0']
-        websiteUrl = 'https://github.com/wenhao/parrot'
-        issueTrackerUrl = 'https://github.com/wenhao/parrot/issues'
-        vcsUrl = 'https://github.com/wenhao/parrot'
+        websiteUrl = 'https://github.com/wenhao/mushrooms'
+        issueTrackerUrl = 'https://github.com/wenhao/mushrooms/issues'
+        vcsUrl = 'https://github.com/wenhao/mushrooms'
         labels = ['mock', 'stub']
         publicDownloadNumbers = true
-        githubRepo = 'wenhao/parrot'
+        githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
             name = '2.1.3'

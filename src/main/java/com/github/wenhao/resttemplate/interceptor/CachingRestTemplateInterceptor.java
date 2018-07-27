@@ -42,11 +42,11 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                 .build();
         boolean isHealth = restTemplateHealthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
-            log.info("[PARROT]Refresh cached data for {}.", cacheRequest.toString());
+            log.info("[MUSHROOMS]Refresh cached data for {}.", cacheRequest.toString());
             cachingRepository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
         }
-        log.info("[PARROT]Respond with cached data for {}.", cacheRequest.toString());
+        log.info("[MUSHROOMS]Respond with cached data for {}.", cacheRequest.toString());
         return Optional.ofNullable(cachingRepository.get(cacheRequest))
                 .map(item -> CachedClientHttpResponse.builder()
                         .httpStatus(OK)
