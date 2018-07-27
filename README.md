@@ -1,4 +1,8 @@
-# parrot
+[![Build Status](https://travis-ci.com/wenhao/parrot.svg?branch=master)](https://travis-ci.com/wenhao/parrot)
+[![Coverage Status](https://coveralls.io/repos/github/wenhao/parrot/badge.svg?branch=master)](https://coveralls.io/github/wenhao/parrot?branch=master)
+[![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+# Parrot
 
 Cacheable http server gateway
 

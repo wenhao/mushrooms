@@ -6,6 +6,7 @@ import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.common.repository.CachingRepository;
 import com.github.wenhao.okhttp.health.OkHttpClientHealthCheck;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -26,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
+@Slf4j
 @Component
 @ConditionalOnProperty(value = "parrot.okhttp.enabled", havingValue = "true")
 @RequiredArgsConstructor
@@ -50,6 +52,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         final Response response = chain.proceed(request);
         boolean isHealth = okHttpClientHealthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
+            log.info("[PARROT]Refresh cached data for {}.", cacheRequest.toString());
             cachingRepository.save(cacheRequest, getResponseBody(response.body()));
             return new Response.Builder()
                     .code(OK.value())
@@ -66,6 +69,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .build();
         }
 
+        log.info("[PARROT]Respond with cached data for {}.", cacheRequest.toString());
         return Optional.ofNullable(cachingRepository.get(cacheRequest))
                 .map(bodyString -> new Response.Builder()
                         .code(OK.value())

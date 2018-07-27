@@ -6,6 +6,7 @@ import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.resttemplate.health.RestTemplateHealthCheck;
 import com.github.wenhao.common.repository.CachingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -21,6 +22,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CachingRestTemplateInterceptor implements ClientHttpRequestInterceptor {
@@ -40,9 +42,11 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                 .build();
         boolean isHealth = restTemplateHealthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
+            log.info("[PARROT]Refresh cached data for {}.", cacheRequest.toString());
             cachingRepository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
         }
+        log.info("[PARROT]Respond with cached data for {}.", cacheRequest.toString());
         return Optional.ofNullable(cachingRepository.get(cacheRequest))
                 .map(item -> CachedClientHttpResponse.builder()
                         .httpStatus(OK)
