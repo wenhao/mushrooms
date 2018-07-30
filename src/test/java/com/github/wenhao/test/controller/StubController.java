@@ -1,4 +1,4 @@
-package com.github.wenhao.controller;
+package com.github.wenhao.test.controller;
 
 import com.github.wenhao.common.domain.Header;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.github.wenhao;
+package com.github.wenhao.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

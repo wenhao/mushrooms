@@ -1,4 +1,4 @@
-package com.github.wenhao.client;
+package com.github.wenhao.test.client;
 
 import com.github.wenhao.common.domain.Header;
 import org.springframework.cloud.openfeign.FeignClient;

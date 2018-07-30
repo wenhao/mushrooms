@@ -1,6 +1,6 @@
-package com.github.wenhao.controller;
+package com.github.wenhao.test.controller;
 
-import com.github.wenhao.client.StubClient;
+import com.github.wenhao.test.client.StubClient;
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
 import org.springframework.beans.factory.annotation.Autowired;
