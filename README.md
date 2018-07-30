@@ -6,12 +6,12 @@
 
 # Mushrooms
 
-Cacheable http server gateway
+Cacheable Remote Call
 
 ### Features
 
-* RestTemplate Cache.
-* Okhttp Cache with OpenFeign.
+* RestTemplate Request Cache.
+* Okhttp Request Cache with OpenFeign.
 
 ### Gradle
 
@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:2.1.3'
+    compile 'com.github.wenhao:mushrooms:1.0.0'
 }
 ```
 
@@ -31,7 +31,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>2.1.3</version>
+    <version>1.0.l0</version>
 </dependency>
 ```
 
@@ -49,14 +49,14 @@ Enabled mushrooms tools and set included headers.
 
 ```yaml
 mushrooms:
-  resttemplate:
-    enabled: true
-  okhttp:
-    enabled: true
-  key: MUSHROOMS-CACHE
-  headers:
-    - content-type
-    - application-specific
+  failover:
+    okhttp:
+      enabled: true
+    resttemplate:
+      enabled: true
+    headers:
+      - application-specific
+      - content-type
 ```
 
 If RedisTemplate is not configured, add follow configuration:
@@ -65,7 +65,7 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: password
+    password: 
     lettuce:
       pool:
         max-active: 8
@@ -99,8 +99,7 @@ public class CustomRestTemplateHealthCheck implements RestTemplateHealthCheck {
     public boolean health(final ClientHttpResponseWrapper response) {
         try {
             final JSONObject jsonObject = new JSONObject(response.getBodyAsString());
-            final boolean isSuccess = jsonObject.getBoolean("success");
-            return isSuccess;
+            return jsonObject.getBoolean("success");
         } catch (JSONException e) {
             return false;
         }
