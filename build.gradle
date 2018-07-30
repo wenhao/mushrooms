@@ -37,7 +37,7 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly "org.springframework.cloud:spring-cloud-starter-openfeign"
     compileOnly 'org.projectlombok:lombok:1.18.0'
-    compileOnly "io.github.openfeign:feign-okhttp:9.7.0"
+    compileOnly "io.github.openfeign:feign-okhttp:9.5.1"
     implementation 'com.google.code.gson:gson:2.8.5'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -46,16 +46,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation "org.springframework.cloud:spring-cloud-starter-openfeign"
-    testImplementation "io.github.openfeign:feign-core:9.7.0"
     testImplementation 'org.projectlombok:lombok:1.18.0'
-    testImplementation "io.github.openfeign:feign-okhttp:9.7.0"
+    testImplementation "io.github.openfeign:feign-okhttp:9.5.1"
     testImplementation 'org.apache.commons:commons-pool2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core:3.10.0'
-}
-
-compileJava {
-    options.incremental = true
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.2.0"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.2.0"
 }
 
 repositories {
@@ -127,6 +124,7 @@ jacocoTestReport {
                     exclude: [
                             '**/Application.class',
                             '**/domain/*.class',
+                            '**/properties/*.class',
                             '**/config/*.class'
                     ]
             )
@@ -141,6 +139,7 @@ jacocoTestCoverageVerification {
             excludes = [
                     '**.Application',
                     '**.domain.*',
+                    '**.properties.*',
                     '**.config.*'
             ]
 

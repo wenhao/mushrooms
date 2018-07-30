@@ -2,8 +2,8 @@ package com.github.wenhao.failover.resttemplate.interceptor;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.failover.repository.FailoverRepository;
 import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
+import com.github.wenhao.failover.repository.FailoverRepository;
 import com.github.wenhao.failover.resttemplate.health.RestTemplateHealthCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,12 +41,15 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                 .build();
         boolean isHealth = healthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
-            log.info("[MUSHROOMS]Refresh cached data for {}.", cacheRequest.toString());
+            log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
             repository.save(cacheRequest, responseWrapper.getBodyAsString());
             return responseWrapper;
         }
-        log.info("[MUSHROOMS]Respond with cached data for {}.", cacheRequest.toString());
         return Optional.ofNullable(repository.get(cacheRequest))
+                .map(cache -> {
+                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
+                    return cache;
+                })
                 .map(item -> CachedClientHttpResponse.builder()
                         .httpStatus(OK)
                         .httpHeaders(response.getHeaders())

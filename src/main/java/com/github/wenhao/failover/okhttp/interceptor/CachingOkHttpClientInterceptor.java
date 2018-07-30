@@ -2,9 +2,9 @@ package com.github.wenhao.failover.okhttp.interceptor;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.failover.repository.FailoverRepository;
 import com.github.wenhao.failover.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
+import com.github.wenhao.failover.repository.FailoverRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
@@ -48,7 +48,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         final Response response = chain.proceed(request);
         boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
-            log.info("[MUSHROOMS]Refresh cached data for {}.", cacheRequest.toString());
+            log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
             repository.save(cacheRequest, getResponseBody(response.body()));
             return new Response.Builder()
                     .code(OK.value())
@@ -64,9 +64,11 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .receivedResponseAtMillis(response.receivedResponseAtMillis())
                     .build();
         }
-
-        log.info("[MUSHROOMS]Respond with cached data for {}.", cacheRequest.toString());
         return Optional.ofNullable(repository.get(cacheRequest))
+                .map(cache -> {
+                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
+                    return cache;
+                })
                 .map(bodyString -> new Response.Builder()
                         .code(OK.value())
                         .request(request)
