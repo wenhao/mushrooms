@@ -225,7 +225,7 @@ publishing {
             version '1.0.0'
             pom.withXml {
                 def root = asNode()
-                root.appendNode('description', 'Cacheable http server gateway.')
+                root.appendNode('description', 'Cacheable Remote Call.')
                 root.appendNode('name', 'mushrooms')
                 root.appendNode('url', 'https://github.com/wenhao/mushrooms')
                 root.appendNode('inceptionYear', '2018')
@@ -247,7 +247,7 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'mushrooms'
-        desc = 'Cacheable http server gateway.'
+        desc = 'Cacheable Remote Call.'
         licenses = ['Apache-2.0']
         websiteUrl = 'https://github.com/wenhao/mushrooms'
         issueTrackerUrl = 'https://github.com/wenhao/mushrooms/issues'
@@ -258,7 +258,7 @@ bintray {
         githubReleaseNotesFile = 'README.md'
         version {
             name = '1.0.0'
-            desc = 'Cacheable http server gateway 1.0.0'
+            desc = 'Cacheable Remote Call 1.0.0'
             released = new Date()
             vcsTag = '1.0.0'
             gpg {
