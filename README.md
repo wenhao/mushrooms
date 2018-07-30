@@ -31,7 +31,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>1.0.l0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
