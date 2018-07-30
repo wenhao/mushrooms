@@ -67,6 +67,10 @@ jar {
     }
 }
 
+compileJava {
+    options.incremental = true
+}
+
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
