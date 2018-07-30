@@ -5,6 +5,8 @@ import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
 import com.github.wenhao.failover.repository.FailoverRepository;
 import com.github.wenhao.failover.resttemplate.health.RestTemplateHealthCheck;
+import com.github.wenhao.failover.resttemplate.response.CachedClientHttpResponse;
+import com.github.wenhao.failover.resttemplate.response.ClientHttpResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;

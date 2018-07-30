@@ -1,6 +1,6 @@
 package com.github.wenhao.failover.resttemplate.health;
 
-import com.github.wenhao.failover.resttemplate.interceptor.ClientHttpResponseWrapper;
+import com.github.wenhao.failover.resttemplate.response.ClientHttpResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

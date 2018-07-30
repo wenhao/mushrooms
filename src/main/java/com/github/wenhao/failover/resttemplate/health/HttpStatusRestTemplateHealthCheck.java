@@ -1,6 +1,6 @@
 package com.github.wenhao.failover.resttemplate.health;
 
-import com.github.wenhao.failover.resttemplate.interceptor.ClientHttpResponseWrapper;
+import com.github.wenhao.failover.resttemplate.response.ClientHttpResponseWrapper;
 
 import java.io.IOException;
 

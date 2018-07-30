@@ -101,6 +101,13 @@ checkstyle {
     }
 }
 
+test {
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+    useJUnitPlatform()
+}
+
 copy {
     from "./config/githooks/"
     into "./.git/hooks/"
@@ -125,7 +132,12 @@ jacocoTestReport {
                             '**/Application.class',
                             '**/domain/*.class',
                             '**/properties/*.class',
-                            '**/config/*.class'
+                            '**/repository/*.class',
+                            '**/interceptor/*.class',
+                            '**/response/*.class',
+                            '**/config/*.class',
+                            '**/OkHttpClientHealthCheck.class',
+                            '**/RestTemplateHealthCheck.class'
                     ]
             )
         })
@@ -140,7 +152,12 @@ jacocoTestCoverageVerification {
                     '**.Application',
                     '**.domain.*',
                     '**.properties.*',
-                    '**.config.*'
+                    '**.repository.*',
+                    '**.interceptor.*',
+                    '**.response.*',
+                    '**.config.*',
+                    '**.health.OkHttpClientHealthCheck',
+                    '**.health.RestTemplateHealthCheck'
             ]
 
             limit {

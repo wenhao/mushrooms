@@ -1,4 +1,4 @@
-package com.github.wenhao.failover.resttemplate.interceptor;
+package com.github.wenhao.failover.resttemplate.response;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
