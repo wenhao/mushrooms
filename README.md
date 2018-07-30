@@ -58,6 +58,18 @@ mushrooms:
       - application-specific
       - content-type
 ```
+If enabled okhttp, enabling feign okhttp as well.
+```yaml
+feign:
+  okhttp:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+```
 
 If RedisTemplate is not configured, add follow configuration:
 ```yaml
