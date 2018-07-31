@@ -14,6 +14,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -64,19 +65,19 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .orElse(getResponse(request, response, ""));
     }
 
-    private Response getResponse(final okhttp3.Request request, final Response response, final String s) {
-        return new Response.Builder()
-                .code(OK.value())
-                .request(request)
-                .headers(response.headers())
-                .body(ResponseBody.create(response.body().contentType(), s))
-                .cacheResponse(response.cacheResponse())
-                .handshake(response.handshake())
-                .message(response.message())
-                .networkResponse(response.networkResponse())
-                .priorResponse(response.priorResponse())
-                .protocol(response.protocol())
-                .receivedResponseAtMillis(response.receivedResponseAtMillis())
+    private Response getResponse(final okhttp3.Request request, final Response response, final String body) {
+        return Mono.just(new Response.Builder())
+                .map(resp -> resp.code(OK.value()))
+                .map(resp -> resp.request(request))
+                .map(resp -> resp.message(response.message()))
+                .map(resp -> resp.body(ResponseBody.create(response.body().contentType(), body)))
+                .map(resp -> Optional.ofNullable(response.headers()).map(resp::headers).orElse(resp))
+                .map(resp -> Optional.ofNullable(response.cacheResponse()).map(resp::cacheResponse).orElse(resp))
+                .map(resp -> Optional.ofNullable(response.handshake()).map(resp::handshake).orElse(resp))
+                .map(resp -> Optional.ofNullable(response.networkResponse()).map(resp::networkResponse).orElse(resp))
+                .map(resp -> Optional.ofNullable(response.priorResponse()).map(resp::priorResponse).orElse(resp))
+                .map(resp -> Optional.ofNullable(response.receivedResponseAtMillis()).map(resp::receivedResponseAtMillis).orElse(resp))
+                .block()
                 .build();
     }
 
@@ -90,6 +91,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .request(request)
                     .message(e.getMessage())
                     .protocol(HTTP_1_1)
+                    .body(ResponseBody.create(MediaType.parse("application/json;charset=UTF-8"), ""))
                     .build();
         }
     }
