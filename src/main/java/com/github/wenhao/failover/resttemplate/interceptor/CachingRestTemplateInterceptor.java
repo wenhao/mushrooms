@@ -2,6 +2,7 @@ package com.github.wenhao.failover.resttemplate.interceptor;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.common.domain.Response;
 import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
 import com.github.wenhao.failover.repository.FailoverRepository;
 import com.github.wenhao.failover.resttemplate.health.RestTemplateHealthCheck;
@@ -9,6 +10,7 @@ import com.github.wenhao.failover.resttemplate.response.CachedClientHttpResponse
 import com.github.wenhao.failover.resttemplate.response.ClientHttpResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -44,18 +47,24 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
         boolean isHealth = healthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
             log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
-            repository.save(cacheRequest, responseWrapper.getBodyAsString());
+            final Response cacheResponse = Response.builder()
+                    .body(responseWrapper.getBodyAsString())
+                    .headers(responseWrapper.getHeaders().entrySet().stream()
+                            .map(entry -> Header.builder().name(entry.getKey()).values(entry.getValue()).build())
+                            .collect(toList()))
+                    .build();
+            repository.save(cacheRequest, cacheResponse);
             return responseWrapper;
         }
         return Optional.ofNullable(repository.get(cacheRequest))
-                .map(cache -> {
+                .map(resp -> {
                     log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
-                    return cache;
+                    return resp;
                 })
-                .map(item -> CachedClientHttpResponse.builder()
+                .map(resp -> CachedClientHttpResponse.builder()
                         .httpStatus(OK)
-                        .httpHeaders(response.getHeaders())
-                        .body(item)
+                        .httpHeaders(getHttpHeaders(resp))
+                        .body(resp.getBody())
                         .build())
                 .orElse(new CachedClientHttpResponse(response));
     }
@@ -70,6 +79,12 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                     .body("")
                     .build();
         }
+    }
+
+    private HttpHeaders getHttpHeaders(final Response resp) {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.putAll(resp.getHeaders().stream().collect(toMap(Header::getName, Header::getValues)));
+        return httpHeaders;
     }
 
     private List<Header> getHeaders(final HttpRequest request) {

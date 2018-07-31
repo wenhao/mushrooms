@@ -2,6 +2,7 @@ package com.github.wenhao.failover.okhttp.interceptor;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.common.domain.Response;
 import com.github.wenhao.failover.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
 import com.github.wenhao.failover.repository.FailoverRepository;
@@ -11,7 +12,6 @@ import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
@@ -20,10 +20,10 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static okhttp3.Protocol.HTTP_1_1;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -40,7 +40,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
     private final List<OkHttpClientHealthCheck> healthChecks;
 
     @Override
-    public Response intercept(final Chain chain) throws IOException {
+    public okhttp3.Response intercept(final Chain chain) throws IOException {
         okhttp3.Request request = chain.request();
 
         final Request cacheRequest = Request.builder()
@@ -50,32 +50,38 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .build();
 
-        final Response response = getRemoteResponse(chain, request);
+        final okhttp3.Response response = getRemoteResponse(chain, request);
         boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
             log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
-            String responseBody = getResponseBody(response.body());
-            repository.save(cacheRequest, responseBody);
-            return getResponse(request, response, responseBody);
+            final Response cacheResponse = Response.builder().headers(response.headers().toMultimap().entrySet().stream()
+                    .map(entry -> Header.builder().name(entry.getKey()).values(entry.getValue()).build())
+                    .collect(toList()))
+                    .body(getResponseBody(response.body()))
+                    .build();
+            repository.save(cacheRequest, cacheResponse);
+            return getResponse(request, response, cacheResponse);
         }
         return Optional.ofNullable(repository.get(cacheRequest))
-                .map(cache -> {
+                .map(resp -> {
                     log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
-                    return cache;
+                    return resp;
                 })
-                .map(body -> getResponse(request, response, body))
-                .orElse(getResponse(request, response, ""));
+                .map(resp -> getResponse(request, response, resp))
+                .orElse(getResponse(request, response, Response.empty()));
     }
 
-    private Response getResponse(final okhttp3.Request request, final Response response, final String body) {
-        return Mono.just(new Response.Builder())
+    private okhttp3.Response getResponse(final okhttp3.Request request, final okhttp3.Response response, final Response cacheResponse) {
+        return Mono.just(new okhttp3.Response.Builder())
                 .map(resp -> resp.code(OK.value()))
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message(response.message()))
                 .map(resp -> resp.protocol(response.protocol()))
-                .map(resp -> Optional.ofNullable(response.body()).map(respBody -> resp.body(ResponseBody.create(respBody.contentType(), body)))
-                        .orElse(resp.body(ResponseBody.create(APPLICATION_JSON_UTF8, body))))
-                .map(resp -> Optional.ofNullable(response.headers()).map(resp::headers).orElse(resp))
+                .map(resp -> Optional.ofNullable(response.body())
+                        .map(respBody -> resp.body(ResponseBody.create(respBody.contentType(), cacheResponse.getBody())))
+                        .orElse(resp.body(ResponseBody.create(APPLICATION_JSON_UTF8, cacheResponse.getBody()))))
+                .map(resp -> resp.headers(Headers.of(cacheResponse.getHeaders().stream()
+                        .collect(toMap(Header::getName, header -> header.getValues().get(0))))))
                 .map(resp -> Optional.ofNullable(response.cacheResponse()).map(resp::cacheResponse).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.handshake()).map(resp::handshake).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.networkResponse()).map(resp::networkResponse).orElse(resp))
@@ -85,12 +91,12 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .build();
     }
 
-    private Response getRemoteResponse(final Chain chain, final okhttp3.Request request) {
+    private okhttp3.Response getRemoteResponse(final Chain chain, final okhttp3.Request request) {
         try {
             return chain.proceed(request);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return new Response.Builder()
+            return new okhttp3.Response.Builder()
                     .code(INTERNAL_SERVER_ERROR.value())
                     .request(request)
                     .message(e.getMessage())
@@ -102,9 +108,8 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
     }
 
     private List<Header> getHeaders(final okhttp3.Request request) {
-        final Map<String, List<String>> headerMap = request.headers().toMultimap();
-        final List<Header> headers = headerMap.keySet().stream()
-                .map(name -> Header.builder().name(name).values(headerMap.get(name)).build())
+        final List<Header> headers = request.headers().toMultimap().entrySet().stream()
+                .map(entry -> Header.builder().name(entry.getKey()).values(entry.getValue()).build())
                 .collect(toList());
         if (!isEmpty(properties.getHeaders())) {
             return headers.stream()
@@ -118,11 +123,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         Buffer buffer = new Buffer();
         try {
             requestBody.writeTo(buffer);
-            Charset charset = UTF8;
-            MediaType contentType = requestBody.contentType();
-            if (contentType != null) {
-                charset = contentType.charset(UTF8);
-            }
+            Charset charset = Optional.ofNullable(requestBody.contentType()).map(contentType -> contentType.charset(UTF8)).orElse(UTF8);
             return buffer.readString(charset);
         } catch (Exception e) {
             return "";
@@ -134,11 +135,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
             BufferedSource source = responseBody.source();
             source.request(Long.MAX_VALUE);
             Buffer buffer = source.buffer();
-            Charset charset = UTF8;
-            MediaType contentType = responseBody.contentType();
-            if (contentType != null) {
-                charset = contentType.charset(UTF8);
-            }
+            Charset charset = Optional.ofNullable(responseBody.contentType()).map(contentType -> contentType.charset(UTF8)).orElse(UTF8);
             return buffer.clone().readString(charset);
         } catch (Exception e) {
             return "";

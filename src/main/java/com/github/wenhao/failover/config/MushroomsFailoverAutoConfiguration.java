@@ -1,6 +1,7 @@
 package com.github.wenhao.failover.config;
 
 import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.common.domain.Response;
 import com.github.wenhao.failover.okhttp.health.HttpStatusOkHttpClientHealthCheck;
 import com.github.wenhao.failover.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.failover.okhttp.interceptor.CachingOkHttpClientInterceptor;
@@ -73,10 +74,10 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean("cachingHashOperations")
-    public HashOperations<String, Request, String> cacheHashOperations(RedisTemplate redisTemplate) {
+    public HashOperations<String, Request, Response> cacheHashOperations(RedisTemplate redisTemplate) {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Request.class));
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Response.class));
         redisTemplate.afterPropertiesSet();
         return redisTemplate.opsForHash();
     }
@@ -90,7 +91,7 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
-    public FailoverRepository failoverRepository(HashOperations<String, Request, String> cacheHashOperations,
+    public FailoverRepository failoverRepository(HashOperations<String, Request, Response> cacheHashOperations,
                                                  MushroomsFailoverConfigurationProperties properties) {
         return new FailoverRepository(cacheHashOperations, properties);
     }

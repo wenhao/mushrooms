@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Header implements Serializable {
+
     private String name;
     private List<String> values;
 }
