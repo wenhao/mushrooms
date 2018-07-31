@@ -3,7 +3,7 @@ plugins {
     id 'idea'
     id 'net.ltgt.apt' version '0.16'
     id 'checkstyle'
-    id "org.springframework.boot" version '2.0.4.RELEASE'
+    id "org.springframework.boot" version '2.0.3.RELEASE'
     id "com.gorylenko.gradle-git-properties" version "1.4.21"
     id "org.owasp.dependencycheck" version "3.2.1"
     id 'com.github.kt3k.coveralls' version '2.7.1'
