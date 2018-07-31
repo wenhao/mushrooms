@@ -3,7 +3,7 @@ plugins {
     id 'idea'
     id 'net.ltgt.apt' version '0.16'
     id 'checkstyle'
-    id "org.springframework.boot" version '2.0.3.RELEASE'
+    id "org.springframework.boot" version '2.0.4.RELEASE'
     id "com.gorylenko.gradle-git-properties" version "1.4.21"
     id "org.owasp.dependencycheck" version "3.2.1"
     id 'com.github.kt3k.coveralls' version '2.7.1'
@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '2.0.3'
+version = '2.0.4'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -226,7 +226,7 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '2.0.3'
+            version '2.0.4'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Cacheable Remote Call.')
@@ -261,10 +261,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '2.0.3'
-            desc = 'Cacheable Remote Call 2.0.3'
+            name = '2.0.4'
+            desc = 'Cacheable Remote Call 2.0.4'
             released = new Date()
-            vcsTag = '2.0.3'
+            vcsTag = '2.0.4'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

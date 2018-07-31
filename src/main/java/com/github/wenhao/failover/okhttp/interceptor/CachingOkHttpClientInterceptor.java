@@ -7,6 +7,7 @@ import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationPrope
 import com.github.wenhao.failover.repository.FailoverRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -95,6 +96,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .message(e.getMessage())
                     .protocol(HTTP_1_1)
                     .body(ResponseBody.create(APPLICATION_JSON_UTF8, ""))
+                    .headers(Headers.of("Content-Type", APPLICATION_JSON_UTF8.toString()))
                     .build();
         }
     }
