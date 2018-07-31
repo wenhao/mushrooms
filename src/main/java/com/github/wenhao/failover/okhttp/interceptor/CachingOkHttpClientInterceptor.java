@@ -83,7 +83,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
     private Response getRemoteResponse(final Chain chain, final okhttp3.Request request) {
         try {
             return chain.proceed(request);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new Response.Builder()
                     .code(INTERNAL_SERVER_ERROR.value())
@@ -117,7 +117,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 charset = contentType.charset(UTF8);
             }
             return buffer.readString(charset);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return "";
         }
     }
@@ -133,7 +133,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 charset = contentType.charset(UTF8);
             }
             return buffer.clone().readString(charset);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return "";
         }
     }

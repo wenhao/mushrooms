@@ -5,7 +5,6 @@ import okhttp3.Response;
 import okio.Buffer;
 import okio.BufferedSource;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 public interface OkHttpClientHealthCheck {
@@ -25,7 +24,7 @@ public interface OkHttpClientHealthCheck {
                 charset = contentType.charset(UTF8);
             }
             return buffer.clone().readString(charset);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return "";
         }
     }
