@@ -33,7 +33,7 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
 
     @Override
     public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
-        ClientHttpResponse response = getRealResponse(request, body, execution);
+        ClientHttpResponse response = getRemoteResponse(request, body, execution);
         ClientHttpResponseWrapper responseWrapper = new ClientHttpResponseWrapper(response);
         Request cacheRequest = Request.builder()
                 .uri(request.getURI())
@@ -60,7 +60,7 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                 .orElse(new CachedClientHttpResponse(response));
     }
 
-    private ClientHttpResponse getRealResponse(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
+    private ClientHttpResponse getRemoteResponse(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
         try {
             return execution.execute(request, body);
         } catch (Exception e) {
