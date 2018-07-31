@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static okhttp3.Protocol.HTTP_1_1;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -45,56 +47,51 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .build();
 
-        final Response response = chain.proceed(request);
+        final Response response = getRemoteResponse(chain, request);
         boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
             log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
-            repository.save(cacheRequest, getResponseBody(response.body()));
-            return new Response.Builder()
-                    .code(OK.value())
-                    .request(request)
-                    .headers(response.headers())
-                    .body(ResponseBody.create(response.body().contentType(), getResponseBody(response.body())))
-                    .cacheResponse(response.cacheResponse())
-                    .handshake(response.handshake())
-                    .message(response.message())
-                    .networkResponse(response.networkResponse())
-                    .priorResponse(response.priorResponse())
-                    .protocol(response.protocol())
-                    .receivedResponseAtMillis(response.receivedResponseAtMillis())
-                    .build();
+            String responseBody = getResponseBody(response.body());
+            repository.save(cacheRequest, responseBody);
+            return getResponse(request, response, responseBody);
         }
         return Optional.ofNullable(repository.get(cacheRequest))
                 .map(cache -> {
                     log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
                     return cache;
                 })
-                .map(bodyString -> new Response.Builder()
-                        .code(OK.value())
-                        .request(request)
-                        .headers(response.headers())
-                        .body(ResponseBody.create(response.body().contentType(), bodyString))
-                        .cacheResponse(response.cacheResponse())
-                        .handshake(response.handshake())
-                        .message(response.message())
-                        .networkResponse(response.networkResponse())
-                        .priorResponse(response.priorResponse())
-                        .protocol(response.protocol())
-                        .receivedResponseAtMillis(response.receivedResponseAtMillis())
-                        .build())
-                .orElse(new Response.Builder()
-                        .code(OK.value())
-                        .request(request)
-                        .headers(response.headers())
-                        .body(ResponseBody.create(response.body().contentType(), ""))
-                        .cacheResponse(response.cacheResponse())
-                        .handshake(response.handshake())
-                        .message(response.message())
-                        .networkResponse(response.networkResponse())
-                        .priorResponse(response.priorResponse())
-                        .protocol(response.protocol())
-                        .receivedResponseAtMillis(response.receivedResponseAtMillis())
-                        .build());
+                .map(body -> getResponse(request, response, body))
+                .orElse(getResponse(request, response, ""));
+    }
+
+    private Response getResponse(final okhttp3.Request request, final Response response, final String s) {
+        return new Response.Builder()
+                .code(OK.value())
+                .request(request)
+                .headers(response.headers())
+                .body(ResponseBody.create(response.body().contentType(), s))
+                .cacheResponse(response.cacheResponse())
+                .handshake(response.handshake())
+                .message(response.message())
+                .networkResponse(response.networkResponse())
+                .priorResponse(response.priorResponse())
+                .protocol(response.protocol())
+                .receivedResponseAtMillis(response.receivedResponseAtMillis())
+                .build();
+    }
+
+    private Response getRemoteResponse(final Chain chain, final okhttp3.Request request) {
+        try {
+            return chain.proceed(request);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            return new Response.Builder()
+                    .code(INTERNAL_SERVER_ERROR.value())
+                    .request(request)
+                    .message(e.getMessage())
+                    .protocol(HTTP_1_1)
+                    .build();
+        }
     }
 
     private List<Header> getHeaders(final okhttp3.Request request) {
