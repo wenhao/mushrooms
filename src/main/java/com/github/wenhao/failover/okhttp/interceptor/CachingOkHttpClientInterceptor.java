@@ -33,6 +33,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class CachingOkHttpClientInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final MediaType APPLICATION_JSON_UTF8 = MediaType.parse("application/json;charset=UTF-8");
     private final FailoverRepository repository;
     private final MushroomsFailoverConfigurationProperties properties;
     private final List<OkHttpClientHealthCheck> healthChecks;
@@ -70,13 +71,15 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .map(resp -> resp.code(OK.value()))
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message(response.message()))
-                .map(resp -> resp.body(ResponseBody.create(response.body().contentType(), body)))
+                .map(resp -> resp.protocol(response.protocol()))
+                .map(resp -> Optional.ofNullable(response.body()).map(respBody -> resp.body(ResponseBody.create(respBody.contentType(), body)))
+                        .orElse(resp.body(ResponseBody.create(APPLICATION_JSON_UTF8, body))))
                 .map(resp -> Optional.ofNullable(response.headers()).map(resp::headers).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.cacheResponse()).map(resp::cacheResponse).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.handshake()).map(resp::handshake).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.networkResponse()).map(resp::networkResponse).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.priorResponse()).map(resp::priorResponse).orElse(resp))
-                .map(resp -> Optional.ofNullable(response.receivedResponseAtMillis()).map(resp::receivedResponseAtMillis).orElse(resp))
+                .map(resp -> resp.receivedResponseAtMillis(response.receivedResponseAtMillis()))
                 .block()
                 .build();
     }
@@ -91,7 +94,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .request(request)
                     .message(e.getMessage())
                     .protocol(HTTP_1_1)
-                    .body(ResponseBody.create(MediaType.parse("application/json;charset=UTF-8"), ""))
+                    .body(ResponseBody.create(APPLICATION_JSON_UTF8, ""))
                     .build();
         }
     }
