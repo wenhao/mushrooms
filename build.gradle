@@ -71,6 +71,8 @@ compileJava {
     options.incremental = true
 }
 
+compileJava.dependsOn(processResources)
+
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
