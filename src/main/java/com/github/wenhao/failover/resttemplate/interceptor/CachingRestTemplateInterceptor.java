@@ -66,7 +66,11 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                         .httpHeaders(getHttpHeaders(resp))
                         .body(resp.getBody())
                         .build())
-                .orElse(new CachedClientHttpResponse(response));
+                .orElse(CachedClientHttpResponse.builder()
+                        .httpStatus(responseWrapper.getStatusCode())
+                        .httpHeaders(responseWrapper.getHeaders())
+                        .body(responseWrapper.getBodyAsString())
+                        .build());
     }
 
     private ClientHttpResponse getRemoteResponse(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
