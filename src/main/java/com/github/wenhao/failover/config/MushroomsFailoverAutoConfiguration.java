@@ -95,4 +95,9 @@ public class MushroomsFailoverAutoConfiguration {
                                                  MushroomsFailoverConfigurationProperties properties) {
         return new FailoverRepository(cacheHashOperations, properties);
     }
+
+    @Bean
+    public MushroomsFailoverConfigurationProperties mushroomsFailoverConfigurationProperties() {
+        return new MushroomsFailoverConfigurationProperties();
+    }
 }

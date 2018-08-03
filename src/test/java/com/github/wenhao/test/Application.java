@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan("com.github.wenhao")
-@EnableFeignClients("com.github.wenhao")
+@ComponentScan("com.github.wenhao.test")
+@EnableFeignClients("com.github.wenhao.test")
 @Configuration
 public class Application {
 

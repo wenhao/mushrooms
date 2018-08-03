@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:2.0.7'
+    compile 'com.github.wenhao:mushrooms:2.0.8'
 }
 ```
 
@@ -31,7 +31,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>2.0.7</version>
+    <version>2.0.8</version>
 </dependency>
 ```
 
@@ -90,7 +90,6 @@ spring:
 
 ```java
 @SpringBootApplication
-@ComponentScan({"com.github.wenhao"})
 public class Application {
 
   public static void main(String[] args) {
