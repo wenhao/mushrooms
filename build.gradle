@@ -235,7 +235,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'Cacheable Remote Call.')
                 root.appendNode('name', 'mushrooms')
-                root.appendNode('uri', 'https://github.com/wenhao/mushrooms')
+                root.appendNode('url', 'https://github.com/wenhao/mushrooms')
                 root.appendNode('inceptionYear', '2018')
                 root.children().last() + pomConfig
             }
