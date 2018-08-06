@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '2.0.8'
+version = '2.1.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -143,6 +143,7 @@ jacocoTestReport {
                             '**/response/*.class',
                             '**/config/*.class',
                             '**/OkHttpClientHealthCheck.class',
+                            '**/dataloader/*.class',
                             '**/RestTemplateHealthCheck.class'
                     ]
             )
@@ -163,6 +164,7 @@ jacocoTestCoverageVerification {
                     '**.response.*',
                     '**.config.*',
                     '**.health.OkHttpClientHealthCheck',
+                    '**.dataloader.*',
                     '**.health.RestTemplateHealthCheck'
             ]
 
@@ -228,12 +230,12 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '2.0.8'
+            version '2.1.0'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Cacheable Remote Call.')
                 root.appendNode('name', 'mushrooms')
-                root.appendNode('url', 'https://github.com/wenhao/mushrooms')
+                root.appendNode('uri', 'https://github.com/wenhao/mushrooms')
                 root.appendNode('inceptionYear', '2018')
                 root.children().last() + pomConfig
             }
@@ -263,10 +265,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '2.0.8'
-            desc = 'Cacheable Remote Call 2.0.8'
+            name = '2.1.0'
+            desc = 'Cacheable Remote Call 2.1.0'
             released = new Date()
-            vcsTag = '2.0.8'
+            vcsTag = '2.1.0'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

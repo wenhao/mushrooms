@@ -25,15 +25,26 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
+logging:
+  level:
+    com.github.wenhao: DEBUG
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS
 
 mushrooms:
   failover:
     excludes:
-      - /exclude_path
-      - http://localhost:8080/exlcude_host_and_path
+      - /stub # without parameters
     okhttp:
       enabled: true
     resttemplate:
       enabled: true
     headers:
       - content-type
+  stub:
+    okhttp:
+      enabled: true
+      stubs:
+        - uri: "http://localhost:8080/stub"
+          method: GET
+          response: header_stub.json

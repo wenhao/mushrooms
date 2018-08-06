@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,7 +18,8 @@ import static java.util.stream.Collectors.toList;
 public class Response {
 
     private String body;
-    private List<Header> headers;
+    @Builder.Default
+    private List<Header> headers = new ArrayList<>();
 
     public static Response empty() {
         return Response.builder()

@@ -1,8 +1,8 @@
 package com.github.wenhao.test.controller;
 
-import com.github.wenhao.test.client.StubClient;
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.test.client.StubClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +26,12 @@ public class TestController {
     @PostMapping("/okhttp")
     public ResponseEntity okHttp(@RequestBody Request request) {
         final Header header = stubClient.get();
+        return ResponseEntity.ok(header);
+    }
+
+    @PostMapping("/stub")
+    public ResponseEntity stub(@RequestBody Request request) {
+        final Header header = stubClient.stub();
         return ResponseEntity.ok(header);
     }
 }

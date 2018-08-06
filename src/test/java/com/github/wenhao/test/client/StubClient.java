@@ -6,10 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(
         name = "STUB",
-        url = "http://localhost:8080/test"
+        url = "http://localhost:8080"
 )
 public interface StubClient {
 
-    @GetMapping
+    @GetMapping("test")
     Header get();
+
+    @GetMapping("stub")
+    Header stub();
 }
