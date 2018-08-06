@@ -50,7 +50,9 @@ dependencies {
 
 ### Get Started
 
-#### application.yml
+#### Failover Configuration
+
+##### application.yml
 
 Enabled mushrooms tools and set included headers.
 
@@ -93,19 +95,7 @@ spring:
         min-idle: 1
 ```
 
-#### SpringBootApplication
-
-```java
-@SpringBootApplication
-public class Application {
-
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-  }
-}
-```
-
-#### Custom RestTemplate Health Check
+##### Custom RestTemplate Health Check
 
 As default, [HttpStatusRestTemplateHealthCheck.java] added, customize health checks:
 
@@ -125,7 +115,7 @@ public class CustomRestTemplateHealthCheck implements RestTemplateHealthCheck {
 }
 ```
 
-#### Custom OkHttp Health Check
+##### Custom OkHttp Health Check
 
 As default, [HttpStatusOkHttpClientHealthCheck.java] added, customize health checks:
 
@@ -145,6 +135,33 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
             return false;
         }
     }
+}
+```
+
+#### Stub Configuration
+
+Enabled mushrooms tools and set included headers.
+
+```yaml
+mushrooms:
+  stub:
+    okhttp:
+      enabled: true
+      stubs:
+        - uri: "http://localhost:8080/stub"
+          method: GET
+          response: header_stub.json
+```
+
+#### SpringBootApplication
+
+```java
+@SpringBootApplication
+public class Application {
+
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 }
 ```
 
