@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 
 @Data
 @Builder
@@ -24,5 +25,9 @@ public class Request implements Serializable {
   public String toString() {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     return gson.toJson(this);
+  }
+
+  public String getUrlButParameters() {
+    return StringUtils.substringBefore(this.uri.toString(), "?");
   }
 }

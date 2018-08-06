@@ -28,6 +28,9 @@ feign:
 
 mushrooms:
   failover:
+    excludes:
+      - /exclude_path
+      - http://localhost:8080/exlcude_host_and_path
     okhttp:
       enabled: true
     resttemplate:

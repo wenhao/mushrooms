@@ -27,7 +27,6 @@ import static java.util.stream.Collectors.toMap;
 import static okhttp3.Protocol.HTTP_1_1;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,6 +50,10 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .build();
 
         final okhttp3.Response response = getRemoteResponse(chain, request);
+        final boolean isExcluded = properties.getExcludes().stream().anyMatch(exclude -> cacheRequest.getUrlButParameters().endsWith(exclude));
+        if (isExcluded) {
+            return response;
+        }
         boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
             log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
@@ -111,12 +114,9 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         final List<Header> headers = request.headers().toMultimap().entrySet().stream()
                 .map(entry -> Header.builder().name(entry.getKey()).values(entry.getValue()).build())
                 .collect(toList());
-        if (!isEmpty(properties.getHeaders())) {
-            return headers.stream()
-                    .filter(header -> properties.getHeaders().contains(header.getName()))
-                    .collect(toList());
-        }
-        return headers;
+        return headers.stream()
+                .filter(header -> properties.getHeaders().contains(header.getName()))
+                .collect(toList());
     }
 
     private String getRequestBody(final RequestBody requestBody) {

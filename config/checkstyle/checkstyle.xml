@@ -309,7 +309,7 @@
         <module name="PackageDeclaration"/>
         <!--<module token="JUnitTestCase" />-->
         <module name="ReturnCount">
-            <property name="max" value="2"/>
+            <property name="max" value="3"/>
         </module>
         <module name="IllegalType"/>
         <!--<module name="DeclarationOrder" />-->

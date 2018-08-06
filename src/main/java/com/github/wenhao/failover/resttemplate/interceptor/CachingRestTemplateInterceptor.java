@@ -24,7 +24,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,6 +43,10 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
                 .headers(getHeaders(request))
                 .body(new String(body))
                 .build();
+        final boolean isExcluded = properties.getExcludes().stream().anyMatch(exclude -> cacheRequest.getUrlButParameters().endsWith(exclude));
+        if (isExcluded) {
+            return response;
+        }
         boolean isHealth = healthChecks.stream().allMatch(restTemplateHealthCheck -> restTemplateHealthCheck.health(responseWrapper));
         if (isHealth) {
             log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
@@ -95,11 +98,8 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
         List<Header> headers = request.getHeaders().keySet().stream()
                 .map(key -> Header.builder().name(key).values(request.getHeaders().get(key)).build())
                 .collect(toList());
-        if (!isEmpty(properties.getHeaders())) {
-            return headers.stream()
-                    .filter(header -> properties.getHeaders().contains(header.getName()))
-                    .collect(toList());
-        }
-        return headers;
+        return headers.stream()
+                .filter(header -> properties.getHeaders().contains(header.getName()))
+                .collect(toList());
     }
 }
