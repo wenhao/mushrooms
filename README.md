@@ -18,6 +18,7 @@ Cacheable Remote Call
 ##### Stub
 
 * Stub Okhttp Request
+* Stub With Json File
 
 ### Gradle
 
