@@ -50,23 +50,8 @@ dependencies {
 
 ### Get Started
 
-#### Failover Configuration
+#### Generic Configuration
 
-##### application.yml
-
-Enabled mushrooms tools and set included headers.
-
-```yaml
-mushrooms:
-  failover:
-    okhttp:
-      enabled: true
-    resttemplate:
-      enabled: true
-    headers:
-      - application-specific
-      - content-type
-```
 If enabled okhttp, enabling feign okhttp as well.
 ```yaml
 feign:
@@ -86,13 +71,33 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: 
+    password:
     lettuce:
       pool:
         max-active: 8
         max-idle: 8
         max-wait: -1ms
         min-idle: 1
+```
+
+#### Failover Configuration
+
+##### application.yml
+
+Enabled mushrooms tools and set included headers.
+
+```yaml
+mushrooms:
+  failover:
+    excludes:
+      - /stub
+    okhttp:
+      enabled: true
+    resttemplate:
+      enabled: true
+    headers:
+      - application-specific
+      - content-type
 ```
 
 ##### Custom RestTemplate Health Check
@@ -164,6 +169,10 @@ public class Application {
   }
 }
 ```
+
+#### Attentions
+
+1. Failover exlucde must contains stub's url.
 
 ### Copyright and license
 
