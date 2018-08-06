@@ -155,7 +155,7 @@ mushrooms:
       stubs:
         - uri: "http://localhost:8080/stub"
           method: GET
-          response: header_stub.json
+          response: stub.json
 ```
 
 #### SpringBootApplication
