@@ -7,6 +7,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("mushrooms.stub")
 public class MushroomsStubConfigurationProperties {
 
-    private String key = "MUSHROOMS-STUB";
     private StubOkHttpConfigurationProperties okhttp;
 }

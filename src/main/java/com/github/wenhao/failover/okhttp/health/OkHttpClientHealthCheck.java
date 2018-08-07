@@ -7,6 +7,7 @@ import okio.BufferedSource;
 
 import java.nio.charset.Charset;
 
+@FunctionalInterface
 public interface OkHttpClientHealthCheck {
 
     Charset UTF8 = Charset.forName("UTF-8");

@@ -16,12 +16,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.List;
 
 @Configuration
-@ConditionalOnExpression("${mushrooms.failover.okhttp.enabled:true} || ${mushrooms.failover.resttemplate.enabled:true} " +
-        "|| ${mushrooms.stub.okhttp.enabled:true}")
+@ConditionalOnExpression("${mushrooms.failover.okhttp.enabled:true} || ${mushrooms.failover.resttemplate.enabled:true}")
 public class MushroomsAutoConfiguration {
 
     @Bean
-    @ConditionalOnExpression("${mushrooms.failover.okhttp.enabled:true} || ${mushrooms.stub.okhttp.enabled:true}")
+    @ConditionalOnExpression("${mushrooms.failover.okhttp.enabled:true}")
     public Client feignClient(OkHttpClient okHttpClient, List<Interceptor> interceptors) {
         final OkHttpClient.Builder builder = okHttpClient.newBuilder();
         interceptors.forEach(builder::addInterceptor);

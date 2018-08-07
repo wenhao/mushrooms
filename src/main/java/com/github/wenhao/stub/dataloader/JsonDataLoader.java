@@ -1,9 +1,6 @@
 package com.github.wenhao.stub.dataloader;
 
-import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.common.domain.Response;
 import com.github.wenhao.stub.domain.Stub;
-import com.github.wenhao.stub.repository.StubRepository;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +15,6 @@ import java.nio.charset.Charset;
 public class JsonDataLoader implements DataLoader {
 
     private final ResourceLoader resourceLoader;
-    private final StubRepository repository;
 
     @Override
     public boolean isApplicable(Stub stub) {
@@ -26,13 +22,9 @@ public class JsonDataLoader implements DataLoader {
     }
 
     @Override
-    public void load(Stub stub) {
-        final Request stubRequest = getRequest(stub);
-        final String response = stub.getResponse();
-        final Resource resource = resourceLoader.getResource("classpath:" + response);
-        repository.save(stubRequest, Response.builder()
-                .body(getBody(resource))
-                .build());
+    public String load(Stub stub) {
+        final Resource resource = resourceLoader.getResource("classpath:" + stub.getResponse());
+        return getBody(resource);
     }
 
     private String getBody(final Resource resource) {
