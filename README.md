@@ -51,7 +51,7 @@ dependencies {
 
 #### Generic Configuration
 
-If enabled okhttp, enabling feign okhttp as well.
+If enabled okhttp, enabling feign okhttp client.
 ```yaml
 feign:
   okhttp:
@@ -64,7 +64,7 @@ feign:
         loggerLevel: full
 ```
 
-If RedisTemplate is not configured, add follow configuration:
+Failover will use redis, if RedisTemplate is not configured, add follow configuration:
 ```yaml
 spring:
   redis:
@@ -83,7 +83,7 @@ spring:
 
 ##### application.yml
 
-Enabled mushrooms tools and set included headers.
+Enabled mushrooms tools and set included headers, don't inlcude any frequent changeable header.
 
 ```yaml
 mushrooms:
@@ -148,7 +148,7 @@ mushrooms:
     okhttp:
       enabled: true
       stubs:
-        - uri: "http://localhost:8080/stub"
+        - uri: "${READL_HOST:http://localhost:8080}/stub"
           method: POST
           body: /stubs/stub_request.json
           response: /stubs/stub_response.json
