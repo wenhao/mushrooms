@@ -37,6 +37,7 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
+    @Order(5)
     @ConditionalOnProperty(prefix = "mushrooms.failover.okhttp", name = "enabled", havingValue = "true")
     public HttpStatusOkHttpClientHealthCheck httpStatusOkHttpClientHealthCheck() {
         return new HttpStatusOkHttpClientHealthCheck();
@@ -57,6 +58,7 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
+    @Order(5)
     @ConditionalOnProperty(prefix = "mushrooms.failover.resttemplate", name = "enabled", havingValue = "true")
     public HttpStatusRestTemplateHealthCheck httpStatusRestTemplateHealthCheck() {
         return new HttpStatusRestTemplateHealthCheck();
