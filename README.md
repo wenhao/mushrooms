@@ -169,7 +169,7 @@ public class Application {
 #### Attentions
 
 1. Stub okhttp interceptor prior to failover okhttp interceptor.
-2. Exclude from failover okhttp configuration if don't need when stub.
+2. Exclude from failover okhttp configuration if don't need it when stub.
 
 ### Copyright and license
 
