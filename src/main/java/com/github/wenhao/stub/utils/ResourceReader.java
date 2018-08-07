@@ -1,4 +1,4 @@
-package com.github.wenhao.stub.dataloader;
+package com.github.wenhao.stub.utils;
 
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,7 @@
 package com.github.wenhao.stub.dataloader;
 
 import com.github.wenhao.stub.domain.Stub;
+import com.github.wenhao.stub.utils.ResourceReader;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

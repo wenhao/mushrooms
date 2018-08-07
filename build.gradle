@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '2.1.1'
+version = '2.1.2'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -39,6 +39,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.0'
     compileOnly "io.github.openfeign:feign-okhttp:9.5.1"
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.github.fge:json-patch:1.9'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
@@ -144,6 +145,7 @@ jacocoTestReport {
                             '**/config/*.class',
                             '**/OkHttpClientHealthCheck.class',
                             '**/dataloader/*.class',
+                            '**/utils/*.class',
                             '**/RestTemplateHealthCheck.class'
                     ]
             )
@@ -165,6 +167,7 @@ jacocoTestCoverageVerification {
                     '**.config.*',
                     '**.health.OkHttpClientHealthCheck',
                     '**.dataloader.*',
+                    '**.utils.*',
                     '**.health.RestTemplateHealthCheck'
             ]
 
@@ -230,7 +233,7 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '2.1.1'
+            version '2.1.2'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Cacheable Remote Call.')
@@ -265,10 +268,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '2.1.1'
-            desc = 'Cacheable Remote Call 2.1.1'
+            name = '2.1.2'
+            desc = 'Cacheable Remote Call 2.1.2'
             released = new Date()
-            vcsTag = '2.1.1'
+            vcsTag = '2.1.2'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

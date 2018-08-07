@@ -3,10 +3,10 @@ package com.github.wenhao.stub.okhttp.interceptor;
 import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.common.domain.Response;
 import com.github.wenhao.stub.dataloader.DataLoader;
-import com.github.wenhao.stub.dataloader.ResourceReader;
+import com.github.wenhao.stub.utils.JsonMatcher;
+import com.github.wenhao.stub.utils.ResourceReader;
 import com.github.wenhao.stub.domain.Stub;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
-import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
@@ -35,7 +35,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
     private final MushroomsStubConfigurationProperties properties;
     private final List<DataLoader> dataLoaders;
     private final ResourceReader resourceReader;
-    private final JsonParser jsonParser = new JsonParser();
+    private final JsonMatcher jsonMatcher;
 
     @Override
     public okhttp3.Response intercept(final Chain chain) throws IOException {
@@ -50,7 +50,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
         final Optional<Stub> stubOptional = properties.getOkhttp().getStubs().stream()
                 .filter(stub -> stubRequest.getUrlButParameters().endsWith(stub.getUri()) &&
                         stubRequest.getMethod().equalsIgnoreCase(stub.getMethod()) &&
-                        stubRequest.getBody().equals(resourceReader.readAsString(stub.getBody())))
+                        jsonMatcher.isJsonMatch(stubRequest.getBody(), resourceReader.readAsString(stub.getBody())))
                 .findFirst();
 
         if (!stubOptional.isPresent()) {

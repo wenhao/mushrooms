@@ -1,10 +1,12 @@
 package com.github.wenhao.stub.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wenhao.stub.dataloader.DataLoader;
 import com.github.wenhao.stub.dataloader.JsonDataLoader;
-import com.github.wenhao.stub.dataloader.ResourceReader;
 import com.github.wenhao.stub.okhttp.interceptor.StubOkHttpClientInterceptor;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
+import com.github.wenhao.stub.utils.JsonMatcher;
+import com.github.wenhao.stub.utils.ResourceReader;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +25,9 @@ public class MushroomsStubAutoConfiguration {
     @ConditionalOnProperty(prefix = "mushrooms.stub.okhttp", name = "enabled", havingValue = "true")
     public StubOkHttpClientInterceptor stubOkHttpClientInterceptor(MushroomsStubConfigurationProperties properties,
                                                                    List<DataLoader> dataLoaders,
-                                                                   ResourceReader resourceReader) {
-        return new StubOkHttpClientInterceptor(properties, dataLoaders, resourceReader);
+                                                                   ResourceReader resourceReader,
+                                                                   JsonMatcher jsonMatcher) {
+        return new StubOkHttpClientInterceptor(properties, dataLoaders, resourceReader, jsonMatcher);
     }
 
 
@@ -41,5 +44,10 @@ public class MushroomsStubAutoConfiguration {
     @Bean
     public ResourceReader resourceReader(ResourceLoader resourceLoader) {
         return new ResourceReader(resourceLoader);
+    }
+
+    @Bean
+    public JsonMatcher jsonMatcher(ObjectMapper objectMapper) {
+        return new JsonMatcher(objectMapper);
     }
 }
