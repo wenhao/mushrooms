@@ -51,7 +51,7 @@ dependencies {
 
 #### Generic Configuration
 
-If enabled okhttp, enabling feign okhttp client.
+If enabled okhttp failover or stub, enabling feign okhttp client.
 ```yaml
 feign:
   okhttp:
@@ -64,7 +64,7 @@ feign:
         loggerLevel: full
 ```
 
-Failover will use redis, if RedisTemplate is not configured, add follow configuration:
+Failover will use redis, if RedisTemplate bean is not configured, add follow configuration:
 ```yaml
 spring:
   redis:
@@ -83,7 +83,7 @@ spring:
 
 ##### application.yml
 
-Enabled mushrooms tools and set included headers, don't inlcude any frequent changeable header.
+Enabled mushrooms failover and set included headers, don't inlcude any frequent changeable header.
 
 ```yaml
 mushrooms:
@@ -140,7 +140,7 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
 
 #### Stub Configuration
 
-Enabled mushrooms stub tools and set stub request and response.
+Enabled mushrooms stub and set stub request and response.
 
 ```yaml
 mushrooms:
