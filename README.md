@@ -125,8 +125,6 @@ As default, [HttpStatusOkHttpClientHealthCheck.java] added, customize health che
 @Component
 public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-    
     @Override
     public boolean health(final Response response) {
         final String body = getResponseBody(response);
