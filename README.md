@@ -6,7 +6,7 @@
 
 # Mushrooms
 
-Cacheable Remote Call
+Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.
 
 ### Features
 
