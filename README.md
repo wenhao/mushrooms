@@ -178,6 +178,6 @@ Copyright © 2018 Wen Hao
 Licensed under [Apache License]
 
 [logo]: ./docs/images/logo.png
-[HttpStatusRestTemplateHealthCheck.java]: ./src/main/java/com/github/wenhao/resttemplate/health/HttpStatusRestTemplateHealthCheck.java
-[HttpStatusOkHttpClientHealthCheck.java]: ./src/main/java/com/github/wenhao/okhttp/health/HttpStatusOkHttpClientHealthCheck.java
+[HttpStatusRestTemplateHealthCheck.java]: ./src/main/java/com/github/wenhao/failover/resttemplate/health/HttpStatusRestTemplateHealthCheck.java
+[HttpStatusOkHttpClientHealthCheck.java]: ./src/main/java/com/github/wenhao/failover/okhttp/health/HttpStatusOkHttpClientHealthCheck.java
 [Apache License]: ./LICENSE
