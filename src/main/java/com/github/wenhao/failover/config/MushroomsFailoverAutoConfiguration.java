@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,6 +28,7 @@ import java.util.List;
 public class MushroomsFailoverAutoConfiguration {
 
     @Bean
+    @Order
     @ConditionalOnProperty(prefix = "mushrooms.failover.okhttp", name = "enabled", havingValue = "true")
     public CachingOkHttpClientInterceptor cachingOkHttpClientInterceptor(FailoverRepository repository,
                                                                          MushroomsFailoverConfigurationProperties properties,

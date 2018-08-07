@@ -33,8 +33,6 @@ logging:
 
 mushrooms:
   failover:
-    excludes:
-      - /stub # without parameters
     okhttp:
       enabled: true
     resttemplate:

@@ -89,8 +89,6 @@ Enabled mushrooms tools and set included headers.
 ```yaml
 mushrooms:
   failover:
-    excludes:
-      - /stub
     okhttp:
       enabled: true
     resttemplate:
@@ -172,7 +170,8 @@ public class Application {
 
 #### Attentions
 
-1. Failover exlucde must contains stub's url.
+1. Stub okhttp interceptor prior to failover okhttp interceptor.
+2. exclude from failover okhttp configuration if don't need.
 
 ### Copyright and license
 
