@@ -17,8 +17,7 @@ Cacheable Remote Call
 
 ##### Stub
 
-* Stub Okhttp Request
-* Stub With Json File
+* Stub Okhttp Response, Request and Response Provider as Json File.
 
 ### Gradle
 
@@ -143,7 +142,7 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
 
 #### Stub Configuration
 
-Enabled mushrooms tools and set included headers.
+Enabled mushrooms stub tools and set stub request and response.
 
 ```yaml
 mushrooms:
@@ -152,8 +151,9 @@ mushrooms:
       enabled: true
       stubs:
         - uri: "http://localhost:8080/stub"
-          method: GET
-          response: stub.json
+          method: POST
+          body: /stubs/stub_request.json
+          response: /stubs/stub_response.json
 ```
 
 #### SpringBootApplication
