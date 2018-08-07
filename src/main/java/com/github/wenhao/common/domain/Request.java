@@ -1,20 +1,24 @@
 package com.github.wenhao.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request implements Serializable {
 
   private URI uri;
@@ -27,6 +31,7 @@ public class Request implements Serializable {
     return gson.toJson(this);
   }
 
+  @JsonIgnore
   public String getUrlButParameters() {
     return StringUtils.substringBefore(this.uri.toString(), "?");
   }

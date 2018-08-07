@@ -1,0 +1,13 @@
+{
+  "method": "POST",
+  "body": "demo",
+  "headers": [
+    {
+      "name": "header1",
+      "values": [
+        "headerValue1",
+        "headerValue2"
+      ]
+    }
+  ]
+}

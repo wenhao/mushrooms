@@ -29,9 +29,9 @@ public class TestController {
         return ResponseEntity.ok(header);
     }
 
-    @PostMapping("/stub")
+    @PostMapping("/okhttp/stub")
     public ResponseEntity stub(@RequestBody Request request) {
-        final Header header = stubClient.stub();
+        final Header header = stubClient.postStub(request);
         return ResponseEntity.ok(header);
     }
 }

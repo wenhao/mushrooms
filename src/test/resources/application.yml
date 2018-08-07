@@ -44,5 +44,6 @@ mushrooms:
       enabled: true
       stubs:
         - uri: "http://localhost:8080/stub"
-          method: GET
-          response: /stubs/stub.json
+          method: POST
+          body: /stubs/stub_request.json
+          response: /stubs/stub_response.json
