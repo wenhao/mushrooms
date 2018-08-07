@@ -8,6 +8,10 @@
 
 Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.
 
+## Why
+
+Remote service integration, especially based on HTTP protocol, e.g. web service, REST etc, highly unstable when developing.
+
 ### Features
 
 ##### Failover
