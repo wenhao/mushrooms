@@ -83,6 +83,13 @@ spring:
         min-idle: 1
 ```
 
+Logging
+```yaml
+logging:
+  level:
+    com.github.wenhao: DEBUG
+```
+
 #### Failover Configuration
 
 ##### application.yml
