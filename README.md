@@ -53,6 +53,81 @@ dependencies {
 
 ### Get Started
 
+#### Failover Configuration
+
+##### application.yml
+
+Enabled mushrooms failover and set included headers, don't inlcude any frequent changeable header.
+
+```yaml
+mushrooms:
+  failover:
+    okhttp:
+      enabled: true
+    resttemplate:
+      enabled: true
+    headers:
+      - application-specific
+      - content-type
+```
+
+##### Custom RestTemplate Health Check
+
+As default, [HttpStatusRestTemplateHealthCheck.java] added, customize health checks if need:
+
+```java
+@Component
+public class CustomRestTemplateHealthCheck implements RestTemplateHealthCheck {
+
+    @Override
+    public boolean health(final ClientHttpResponseWrapper response) {
+        try {
+            final JSONObject jsonObject = new JSONObject(response.getBodyAsString());
+            return jsonObject.getBoolean("success");
+        } catch (JSONException e) {
+            return false;
+        }
+    }
+}
+```
+
+##### Custom OkHttp Health Check
+
+As default, [HttpStatusOkHttpClientHealthCheck.java] added, customize health checks if need:
+
+```java
+@Component
+public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
+
+    @Override
+    public boolean health(final Response response) {
+        final String body = getResponseBody(response);
+        try {
+            final JSONObject jsonObject = new JSONObject(body);
+            return jsonObject.getBoolean("success");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
+```
+
+#### Stub Configuration
+
+Enabled mushrooms stub and set stub request and response.
+
+```yaml
+mushrooms:
+  stub:
+    okhttp:
+      enabled: true
+      stubs:
+        - uri: "${READL_HOST:http://localhost:8080}/stub"
+          method: POST
+          body: /stubs/stub_request.json
+          response: /stubs/stub_response.json
+```
+
 #### Generic Configuration
 
 If enabled okhttp failover or stub, enabling feign okhttp client.
@@ -88,81 +163,6 @@ Logging
 logging:
   level:
     com.github.wenhao: DEBUG
-```
-
-#### Failover Configuration
-
-##### application.yml
-
-Enabled mushrooms failover and set included headers, don't inlcude any frequent changeable header.
-
-```yaml
-mushrooms:
-  failover:
-    okhttp:
-      enabled: true
-    resttemplate:
-      enabled: true
-    headers:
-      - application-specific
-      - content-type
-```
-
-##### Custom RestTemplate Health Check
-
-As default, [HttpStatusRestTemplateHealthCheck.java] added, customize health checks:
-
-```java
-@Component
-public class CustomRestTemplateHealthCheck implements RestTemplateHealthCheck {
-
-    @Override
-    public boolean health(final ClientHttpResponseWrapper response) {
-        try {
-            final JSONObject jsonObject = new JSONObject(response.getBodyAsString());
-            return jsonObject.getBoolean("success");
-        } catch (JSONException e) {
-            return false;
-        }
-    }
-}
-```
-
-##### Custom OkHttp Health Check
-
-As default, [HttpStatusOkHttpClientHealthCheck.java] added, customize health checks:
-
-```java
-@Component
-public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
-
-    @Override
-    public boolean health(final Response response) {
-        final String body = getResponseBody(response);
-        try {
-            final JSONObject jsonObject = new JSONObject(body);
-            return jsonObject.getBoolean("success");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-}
-```
-
-#### Stub Configuration
-
-Enabled mushrooms stub and set stub request and response.
-
-```yaml
-mushrooms:
-  stub:
-    okhttp:
-      enabled: true
-      stubs:
-        - uri: "${READL_HOST:http://localhost:8080}/stub"
-          method: POST
-          body: /stubs/stub_request.json
-          response: /stubs/stub_response.json
 ```
 
 #### SpringBootApplication
