@@ -24,7 +24,7 @@ public class ResourceReader {
         try {
             return Resources.toString(resource.getURL(), Charset.forName("UTF8"));
         } catch (IOException e) {
-            log.error("[MUSHROOMS]Read stub json response file failure.", e);
+            log.error("[MUSHROOMS]Failure to read stub json response file.", e);
             return "";
         }
     }
