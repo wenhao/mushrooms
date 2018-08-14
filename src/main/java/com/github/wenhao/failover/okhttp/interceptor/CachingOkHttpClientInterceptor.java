@@ -68,6 +68,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         return Optional.ofNullable(repository.get(cacheRequest))
                 .map(resp -> {
                     log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
+                    log.debug("[MUSHROOMS]Respond with cached data for error response\n{}.", getResponseBody(response.body()));
                     return resp;
                 })
                 .map(resp -> getResponse(request, response, resp))
