@@ -21,7 +21,7 @@ Remote service integration, especially based on HTTP protocol, e.g. web service,
 
 ##### Stub
 
-* Stub Okhttp Response, Request and Response Provider as Json File.
+* Stub Okhttp json/soap Response, Request and Response Provider as Json/Xml File.
 
 ### Gradle
 
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:2.1.3'
+    compile 'com.github.wenhao:mushrooms:2.1.4'
 }
 ```
 
@@ -41,7 +41,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>2.1.3</version>
+    <version>2.1.4</version>
 </dependency>
 ```
 

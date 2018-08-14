@@ -1,0 +1,58 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:anz="http://anz.shop.esprit-club.com" xmlns:new="http://anz.shop.esprit-club.com/new_member">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <anz:new_member>
+            <!--Optional:-->
+            <new:NewMemberRequest>
+                <kunde>
+                    <!--Optional:-->
+                    <!--               <adress2></adress2>-->
+                    <anrede>4</anrede>
+                    <!--Optional:-->
+                    <anredetext>UNKNOWN</anredetext>
+                    <!--Optional:-->
+                    <email>YTdlNjk3ZTQxYmNlYzAwMTdjYThhN2Q4MzE3YmE2YzQ=</email>
+                    <!--Optional:-->
+                    <geburtsdatum>YWM5OWUyNjU2MjZjN2JkMzY4MGJmNjA3ZGU3ZTViOTI=</geburtsdatum>
+                    <!--Optional:-->
+                    <kontoland>SG</kontoland>
+                    <!--Optional:-->
+                    <!--               <kundennummer></kundennummer>-->
+                    <!--Optional:-->
+                    <kundenstatus>R</kundenstatus>
+                    <!--Optional:-->
+                    <mobil>ODcwYmE1YmRjMDg3MzcyMDc4NTgwZDI1YWZkNTMxOGU=</mobil>
+                    <!--Optional:-->
+                    <nachname>YTBiNWY3ZTMxYmQ3YzhjMw==</nachname>
+                    <!--Optional:-->
+                    <ort>chengdu</ort>
+                    <!--Optional:-->
+                    <!--               <passnummer></passnummer>-->
+                    <!--Optional:-->
+                    <plz>ZDI2YmEzMWU0OTliNjhkYg==</plz>
+                    <!--Optional:-->
+                    <!--               <sprache></sprache>-->
+                    <!--Optional:-->
+                    <state>sichuan</state>
+                    <!--Optional:-->
+                    <strasse>gaoxinqu</strasse>
+                    <!--Optional:-->
+                    <!--               <telefon></telefon>-->
+                    <!--Optional:-->
+                    <!--               <titel></titel>-->
+                    <!--Optional:-->
+                    <vorname>YmRlMzFlNTgwZTc2ODgyNA==</vorname>
+                    <!--Optional:-->
+                    <wohnland>SG</wohnland>
+                    <!--Optional:-->
+                    <zusatz></zusatz>
+                </kunde>
+                <kunPwd>NWY1MjA5YTdlMmI1OTIxOWM1OTM1ZTY2ZTY4YzEyMTg=</kunPwd>
+                <!--Optional:-->
+                <!--            <orderid></orderid>-->
+                <shopid>ERHKESH</shopid>
+                <optin>1</optin>
+            </new:NewMemberRequest>
+        </anz:new_member>
+    </soapenv:Body>
+</soapenv:Envelope>

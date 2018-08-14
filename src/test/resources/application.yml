@@ -47,3 +47,7 @@ mushrooms:
           method: POST
           body: /stubs/stub_request.json
           response: /stubs/stub_response.json
+        - uri: "http://localhost:8080/stub_soap"
+          method: POST
+          body: /stubs/stub_soap_request.xml
+          response: /stubs/stub_soap_response.xml

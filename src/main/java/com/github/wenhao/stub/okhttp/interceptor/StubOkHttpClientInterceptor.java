@@ -2,25 +2,22 @@ package com.github.wenhao.stub.okhttp.interceptor;
 
 import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.common.domain.Response;
-import com.github.wenhao.stub.dataloader.DataLoader;
-import com.github.wenhao.stub.utils.JsonMatcher;
-import com.github.wenhao.stub.utils.ResourceReader;
+import com.github.wenhao.stub.dataloader.ResourceReader;
+import com.github.wenhao.stub.dataloader.StubResponseDataLoader;
 import com.github.wenhao.stub.domain.Stub;
+import com.github.wenhao.stub.matcher.BodyMatcher;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.Buffer;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Optional;
 
 import static okhttp3.Protocol.HTTP_1_1;
@@ -30,12 +27,11 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class StubOkHttpClientInterceptor implements Interceptor {
 
-    private static final MediaType APPLICATION_JSON_UTF8 = MediaType.parse("application/json;charset=UTF-8");
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final MushroomsStubConfigurationProperties properties;
-    private final List<DataLoader> dataLoaders;
+    private final StubResponseDataLoader dataLoader;
     private final ResourceReader resourceReader;
-    private final JsonMatcher jsonMatcher;
+    private final BodyMatcher bodyMatcher;
 
     @Override
     public okhttp3.Response intercept(final Chain chain) throws IOException {
@@ -50,22 +46,14 @@ public class StubOkHttpClientInterceptor implements Interceptor {
         final Optional<Stub> stubOptional = properties.getOkhttp().getStubs().stream()
                 .filter(stub -> stubRequest.getUrlButParameters().endsWith(stub.getUri()) &&
                         stubRequest.getMethod().equalsIgnoreCase(stub.getMethod()) &&
-                        jsonMatcher.isJsonMatch(stubRequest.getBody(), resourceReader.readAsString(stub.getBody())))
+                        bodyMatcher.isMatch(resourceReader.readAsString(stub.getBody()), stubRequest.getBody()))
                 .findFirst();
 
         if (!stubOptional.isPresent()) {
             return chain.proceed(request);
         }
 
-        final Stub stub = stubOptional.get();
-        final Response response = Flux.fromIterable(dataLoaders)
-                .filter(dataLoader -> dataLoader.isApplicable(stub))
-                .next()
-                .map(dataLoader -> dataLoader.load(stub))
-                .map(body -> Response.builder().body(body).build())
-                .block();
-
-        return Optional.ofNullable(response)
+        return Optional.ofNullable(dataLoader.load(stubOptional.get()))
                 .map(resp -> {
                     log.debug("[MUSHROOMS]Respond with stub data for request\n{}.", stubRequest.toString());
                     return resp;
@@ -80,8 +68,8 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message("[MUSHROOMS]Respond with stub data"))
                 .map(resp -> resp.protocol(HTTP_1_1))
-                .map(resp -> resp.body(ResponseBody.create(APPLICATION_JSON_UTF8, response.getBody())))
-                .map(resp -> resp.headers(Headers.of("Content-Type", APPLICATION_JSON_UTF8.toString())))
+                .map(resp -> resp.body(ResponseBody.create(response.getContentType(), response.getBody())))
+                .map(resp -> resp.headers(Headers.of("Content-Type", response.getContentType().toString())))
                 .block()
                 .build();
     }

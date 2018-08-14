@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '2.1.3'
+version = '2.1.4'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -40,6 +40,7 @@ dependencies {
     compileOnly "io.github.openfeign:feign-okhttp:9.5.1"
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.fge:json-patch:1.9'
+    implementation 'org.json:json:20180130'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
@@ -53,6 +54,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core:3.10.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.2.0"
+    testImplementation "commons-io:commons-io:2.6"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.2.0"
 }
 
@@ -145,7 +147,7 @@ jacocoTestReport {
                             '**/config/*.class',
                             '**/OkHttpClientHealthCheck.class',
                             '**/dataloader/*.class',
-                            '**/utils/*.class',
+                            '**/matcher/*.class',
                             '**/RestTemplateHealthCheck.class'
                     ]
             )
@@ -167,7 +169,7 @@ jacocoTestCoverageVerification {
                     '**.config.*',
                     '**.health.OkHttpClientHealthCheck',
                     '**.dataloader.*',
-                    '**.utils.*',
+                    '**.matcher.*',
                     '**.health.RestTemplateHealthCheck'
             ]
 
@@ -233,10 +235,10 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '2.1.3'
+            version '2.1.4'
             pom.withXml {
                 def root = asNode()
-                root.appendNode('description', 'Cacheable Remote Call.')
+                root.appendNode('description', 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.')
                 root.appendNode('name', 'mushrooms')
                 root.appendNode('url', 'https://github.com/wenhao/mushrooms')
                 root.appendNode('inceptionYear', '2018')
@@ -258,7 +260,7 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'mushrooms'
-        desc = 'Cacheable Remote Call.'
+        desc = 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.'
         licenses = ['Apache-2.0']
         websiteUrl = 'https://github.com/wenhao/mushrooms'
         issueTrackerUrl = 'https://github.com/wenhao/mushrooms/issues'
@@ -268,10 +270,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '2.1.3'
-            desc = 'Cacheable Remote Call 2.1.3'
+            name = '2.1.4'
+            desc = 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.'
             released = new Date()
-            vcsTag = '2.1.3'
+            vcsTag = '2.1.4'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

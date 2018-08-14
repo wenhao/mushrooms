@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 
 @RestController
 @RequestMapping("/test")
@@ -29,6 +30,12 @@ public class StubController {
     public ResponseEntity post() {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return ResponseEntity.ok(Header.builder().name("post").values(Stream.of(now).collect(toList())).build());
+    }
+
+    @PostMapping(consumes = TEXT_XML_VALUE, value = "stub_soap")
+    public ResponseEntity stubSoap() {
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ResponseEntity.status(500).build();
     }
 
 }
