@@ -11,14 +11,14 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class CachingRestTemplatePostProcessor implements BeanPostProcessor {
 
-    private final List<ClientHttpRequestInterceptor> interceptors;
+    private final List<ClientHttpRequestInterceptor> httpRequestInterceptors;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof RestTemplate) {
             final RestTemplate restTemplate = (RestTemplate) bean;
             List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
-            interceptors.addAll(interceptors);
+            interceptors.addAll(httpRequestInterceptors);
             restTemplate.setInterceptors(interceptors);
             return restTemplate;
         }
