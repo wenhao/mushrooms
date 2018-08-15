@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.Buffer;
@@ -68,7 +69,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message("[MUSHROOMS]Respond with stub data"))
                 .map(resp -> resp.protocol(HTTP_1_1))
-                .map(resp -> resp.body(ResponseBody.create(response.getContentType(), response.getBody())))
+                .map(resp -> resp.body(ResponseBody.create(MediaType.parse(response.getContentType()), response.getBody())))
                 .map(resp -> resp.headers(Headers.of("Content-Type", response.getContentType().toString())))
                 .block()
                 .build();

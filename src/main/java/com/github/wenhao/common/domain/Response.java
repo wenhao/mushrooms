@@ -24,7 +24,7 @@ public class Response {
     @Builder.Default
     private List<Header> headers = new ArrayList<>();
     @Builder.Default
-    private MediaType contentType = APPLICATION_JSON_UTF8;
+    private String contentType = APPLICATION_JSON_UTF8.toString();
 
     public static Response empty() {
         return Response.builder()

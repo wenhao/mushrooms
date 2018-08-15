@@ -20,7 +20,7 @@ public class StubResponseDataLoader {
         return Optional.ofNullable(body)
                 .filter(bodyMatcher::isSoapRequest)
                 .map(it -> Response.builder()
-                        .contentType(TEXT_XML_UTF8)
+                        .contentType(TEXT_XML_UTF8.toString())
                         .body(body)
                         .build())
                 .orElse(Response.builder()
