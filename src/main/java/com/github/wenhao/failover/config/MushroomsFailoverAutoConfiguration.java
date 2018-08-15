@@ -20,7 +20,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import java.util.List;
 
@@ -46,8 +45,8 @@ public class MushroomsFailoverAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "mushrooms.failover.resttemplate", name = "enabled", havingValue = "true")
-    public CachingRestTemplatePostProcessor cachingRestTemplatePostProcessor(List<ClientHttpRequestInterceptor> interceptors) {
-        return new CachingRestTemplatePostProcessor(interceptors);
+    public CachingRestTemplatePostProcessor cachingRestTemplatePostProcessor(CachingRestTemplateInterceptor interceptor) {
+        return new CachingRestTemplatePostProcessor(interceptor);
     }
 
     @Bean
