@@ -84,7 +84,7 @@ public class CachingRestTemplateInterceptor implements ClientHttpRequestIntercep
             return CachedClientHttpResponse.builder()
                     .httpStatus(INTERNAL_SERVER_ERROR)
                     .httpHeaders(request.getHeaders())
-                    .body("")
+                    .body(e.getMessage())
                     .build();
         }
     }
