@@ -83,7 +83,7 @@ mushrooms:
     okhttp:
       enabled: true
       stubs:
-        - uri: "${READL_HOST:http://localhost:8080}/stub"
+        - uri: "${READL_HOST:http://localhost:8080}/stub/book"
           method: POST
           body: /stubs/stub_rest_request.json
           response: /stubs/stub_rest_response.json
