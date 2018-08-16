@@ -1,13 +1,4 @@
 {
-  "body": "demo",
-  "method": "POST",
-  "headers": [
-    {
-      "name": "header1",
-      "values": [
-        "headerValue1",
-        "headerValue2"
-      ]
-    }
-  ]
+  "name": "Java",
+  "price": "34.5"
 }

@@ -184,18 +184,6 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
 }
 ```
 
-#### SpringBootApplication
-
-```java
-@SpringBootApplication
-public class Application {
-
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-  }
-}
-```
-
 #### Attentions
 
 1. Stub okhttp interceptor prior to failover okhttp interceptor.

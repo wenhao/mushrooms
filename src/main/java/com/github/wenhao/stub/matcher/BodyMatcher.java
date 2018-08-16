@@ -18,7 +18,7 @@ public class BodyMatcher {
     }
 
     public boolean isSoapRequest(final String realBody) {
-        return realBody.contains("schemas.xmlsoap.org");
+        return realBody.contains("<soap:Envelope");
     }
 
 }

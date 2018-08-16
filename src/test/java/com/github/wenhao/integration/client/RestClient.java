@@ -1,18 +1,17 @@
 package com.github.wenhao.integration.client;
 
-import feign.Headers;
-import feign.Response;
+import com.github.wenhao.integration.domain.Book;
+import com.github.wenhao.integration.request.CreateBookRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
-        name = "SOAP",
+        name = "REST",
         url = "http://localhost:8080"
 )
-@Headers("Content-Type: text/xml;charset=UTF-8")
-public interface SoapClient {
+public interface RestClient {
 
-    @PostMapping("stub/get_book")
-    Response getBook(@RequestBody String request);
+    @PostMapping("stub/book")
+    Book newBook(@RequestBody CreateBookRequest request);
 }

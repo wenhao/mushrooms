@@ -38,16 +38,16 @@ public class StubOkHttpClientInterceptor implements Interceptor {
     public okhttp3.Response intercept(final Chain chain) throws IOException {
         okhttp3.Request request = chain.request();
 
-        final Request stubRequest = Request.builder()
+        final Request realRequest = Request.builder()
                 .uri(request.url().uri())
                 .method(request.method())
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .build();
 
         final Optional<Stub> stubOptional = properties.getOkhttp().getStubs().stream()
-                .filter(stub -> stubRequest.getUrlButParameters().endsWith(stub.getUri()) &&
-                        stubRequest.getMethod().equalsIgnoreCase(stub.getMethod()) &&
-                        bodyMatcher.isMatch(resourceReader.readAsString(stub.getBody()), stubRequest.getBody()))
+                .filter(stub -> realRequest.getUrlButParameters().endsWith(stub.getUri()) &&
+                        realRequest.getMethod().equalsIgnoreCase(stub.getMethod()) &&
+                        bodyMatcher.isMatch(resourceReader.readAsString(stub.getBody()), realRequest.getBody()))
                 .findFirst();
 
         if (!stubOptional.isPresent()) {
@@ -56,7 +56,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
 
         return Optional.ofNullable(dataLoader.load(stubOptional.get()))
                 .map(resp -> {
-                    log.debug("[MUSHROOMS]Respond with stub data for request\n{}.", stubRequest.toString());
+                    log.debug("[MUSHROOMS]Respond with stub data for request\n{}.", realRequest.toString());
                     return resp;
                 })
                 .map(resp -> getResponse(request, resp))

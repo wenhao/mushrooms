@@ -1,9 +1,8 @@
 package com.github.wenhao.integration.controller;
 
-import com.github.wenhao.common.domain.Header;
-import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.integration.client.StubClient;
+import com.github.wenhao.integration.client.RestClient;
 import com.github.wenhao.integration.domain.Book;
+import com.github.wenhao.integration.request.CreateBookRequest;
 import com.github.wenhao.integration.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +18,18 @@ import org.springframework.web.client.RestTemplate;
 public class TestController {
 
     private final RestTemplate restTemplate;
-    private final StubClient stubClient;
+    private final RestClient restClient;
     private final BookService bookService;
 
-    @PostMapping("/resttemplate")
-    public ResponseEntity restTemplate(@RequestBody Request request) {
-        return restTemplate.getForEntity("http://localhost:8080/test", String.class);
+    @PostMapping("/book/resttemplate")
+    public ResponseEntity<Book> restTemplate(@RequestBody CreateBookRequest request) {
+        return restTemplate.postForEntity("http://localhost:8080/stub/book", request, Book.class);
     }
 
-    @PostMapping("/okhttp")
-    public ResponseEntity okHttp(@RequestBody Request request) {
-        final Header header = stubClient.get();
-        return ResponseEntity.ok(header);
-    }
-
-    @PostMapping("/okhttp/stub")
-    public ResponseEntity stub(@RequestBody Request request) {
-        final Header header = stubClient.postStub(request);
-        return ResponseEntity.ok(header);
+    @PostMapping("book/okhttp")
+    public ResponseEntity<Book> newBook(@RequestBody CreateBookRequest request) {
+        final Book book = restClient.newBook(request);
+        return ResponseEntity.ok(book);
     }
 
     @GetMapping("book")
