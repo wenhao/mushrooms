@@ -1,4 +1,4 @@
-package com.github.wenhao.test.controller;
+package com.github.wenhao.integration.controller;
 
 import com.github.wenhao.common.domain.Header;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/stub")
 public class StubController {
 
     @GetMapping(consumes = APPLICATION_JSON_UTF8_VALUE)
@@ -35,6 +35,11 @@ public class StubController {
     @PostMapping(consumes = TEXT_XML_VALUE, value = "stub_soap")
     public ResponseEntity stubSoap() {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ResponseEntity.status(500).build();
+    }
+
+    @PostMapping(consumes = TEXT_XML_VALUE, value = "book")
+    public ResponseEntity getBook() {
         return ResponseEntity.status(500).build();
     }
 

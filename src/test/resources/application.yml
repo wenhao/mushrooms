@@ -11,6 +11,14 @@ spring:
         max-idle: 8
         max-wait: -1ms
         min-idle: 1
+  freemarker:
+    template-loader-path: classpath:/templates/
+    suffix: .ftl
+    check-template-location: true
+    charset: UTF-8
+    cache: true
+    enabled: false
+
 server:
   port: 8080
 
@@ -45,9 +53,9 @@ mushrooms:
       stubs:
         - uri: "http://localhost:8080/stub"
           method: POST
-          body: /stubs/stub_request.json
-          response: /stubs/stub_response.json
-        - uri: "http://localhost:8080/stub_soap"
+          body: /stubs/stub_rest_request.json
+          response: /stubs/stub_rest_response.json
+        - uri: "http://localhost:8080/stub/get_book"
           method: POST
           body: /stubs/stub_soap_request.xml
           response: /stubs/stub_soap_response.xml

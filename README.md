@@ -17,11 +17,12 @@ Remote service integration, especially based on HTTP protocol, e.g. web service,
 ##### Failover
 
 * RestTemplate Request Cache.
-* Okhttp Request Cache with OpenFeign.
+* Okhttp Request Cache with @FeignClient.
 
 ##### Stub
 
-* Stub Okhttp json/soap Response, Request and Response Provider as Json/Xml File.
+* Stub REST API via @FeignClient.
+* Stub Soap API via @FeignClient.
 
 ### Gradle
 
@@ -71,6 +72,77 @@ mushrooms:
       - content-type
 ```
 
+#### Stub Configuration
+
+Enabled mushrooms stub and set stub request and response.
+
+Stub REST API
+```yaml
+mushrooms:
+  stub:
+    okhttp:
+      enabled: true
+      stubs:
+        - uri: "${READL_HOST:http://localhost:8080}/stub"
+          method: POST
+          body: /stubs/stub_rest_request.json
+          response: /stubs/stub_rest_response.json
+```
+
+Stub Soap API
+```yaml
+mushrooms:
+  stub:
+    okhttp:
+      enabled: true
+      stubs:
+        - uri: "${READL_HOST:http://localhost:8080}/stub"
+          method: POST
+          body: /stubs/stub_soap_request.xml
+          response: /stubs/stub_soap_response.xml
+```
+
+#### Generic Configuration
+
+If enabled okhttp failover or stub, enabling feign okhttp client.
+```yaml
+feign:
+  okhttp:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+```
+
+Failover will use redis, if RedisTemplate bean is not configured, add follow configuration:
+```yaml
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 1
+```
+
+Logging
+```yaml
+logging:
+  level:
+    com.github.wenhao: DEBUG
+```
+
+#### Customization
+
+As default, failover only applys if httpstatus not equals to 200.
+
 ##### Custom RestTemplate Health Check
 
 As default, [HttpStatusRestTemplateHealthCheck.java] added, customize health checks if need:
@@ -110,59 +182,6 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
         }
     }
 }
-```
-
-#### Stub Configuration
-
-Enabled mushrooms stub and set stub request and response.
-
-```yaml
-mushrooms:
-  stub:
-    okhttp:
-      enabled: true
-      stubs:
-        - uri: "${READL_HOST:http://localhost:8080}/stub"
-          method: POST
-          body: /stubs/stub_request.json
-          response: /stubs/stub_response.json
-```
-
-#### Generic Configuration
-
-If enabled okhttp failover or stub, enabling feign okhttp client.
-```yaml
-feign:
-  okhttp:
-    enabled: true
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: full
-```
-
-Failover will use redis, if RedisTemplate bean is not configured, add follow configuration:
-```yaml
-spring:
-  redis:
-    host: localhost
-    port: 6379
-    password:
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        max-wait: -1ms
-        min-idle: 1
-```
-
-Logging
-```yaml
-logging:
-  level:
-    com.github.wenhao: DEBUG
 ```
 
 #### SpringBootApplication

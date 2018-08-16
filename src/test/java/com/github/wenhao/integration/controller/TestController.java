@@ -1,27 +1,26 @@
-package com.github.wenhao.test.controller;
+package com.github.wenhao.integration.controller;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.test.client.StubClient;
-import feign.Response;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.wenhao.integration.client.StubClient;
+import com.github.wenhao.integration.domain.Book;
+import com.github.wenhao.integration.service.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-
 @RestController
+@RequiredArgsConstructor
 public class TestController {
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private StubClient stubClient;
+    private final RestTemplate restTemplate;
+    private final StubClient stubClient;
+    private final BookService bookService;
 
     @PostMapping("/resttemplate")
     public ResponseEntity restTemplate(@RequestBody Request request) {
@@ -40,10 +39,9 @@ public class TestController {
         return ResponseEntity.ok(header);
     }
 
-    @PostMapping("/okhttp/stub_soap")
-    public ResponseEntity stubSoap(@RequestBody String request) throws IOException {
-        final Response response = stubClient.soap(request);
-        final String responseBody = IOUtils.toString(response.body().asInputStream(), Charset.forName("UTF-8"));
-        return ResponseEntity.ok(responseBody);
+    @GetMapping("book")
+    public ResponseEntity<Book> getBook(@RequestParam String name) {
+        final Book book = bookService.get(name);
+        return ResponseEntity.ok(book);
     }
 }

@@ -1,13 +1,14 @@
-<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
-    <S:Body>
-        <S:Fault xmlns:ns4="http://www.w3.org/2003/05/soap-envelope">
-            <faultcode>S:Server</faultcode>
-            <faultstring>key not found for zȟ��&lt;�}tӝ�</faultstring>
-            <detail>
-                <ns3:IllegalAccessException xmlns:ns3="http://anz.shop.esprit-club.com" xmlns:ns2="http://anz.shop.esprit-club.com/new_member">
-                    <message>key not found for zȟ��&lt;�}tӝ�</message>
-                </ns3:IllegalAccessException>
-            </detail>
-        </S:Fault>
-    </S:Body>
-</S:Envelope>
+<?xml version="1.0"?>
+
+<soap:Envelope
+        xmlns:soap="http://www.w3.org/2003/05/soap-envelope/"
+        soap:encodingStyle="http://www.w3.org/2003/05/soap-encoding">
+
+    <soap:Body xmlns:m="http://www.example.org/stock">
+        <m:GetBookResponse>
+            <m:Name>Java</m:Name>
+            <m:Price>34.5</m:Price>
+        </m:GetBookResponse>
+    </soap:Body>
+
+</soap:Envelope>

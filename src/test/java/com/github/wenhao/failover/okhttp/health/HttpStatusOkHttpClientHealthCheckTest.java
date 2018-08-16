@@ -24,7 +24,7 @@ class HttpStatusOkHttpClientHealthCheckTest {
         // given
         final Response response = new Response.Builder()
                 .code(OK.value())
-                .request(new Request.Builder().url("http://test.com").build())
+                .request(new Request.Builder().url("http://integration.com").build())
                 .protocol(HTTP_1_1)
                 .message("message")
                 .build();
@@ -41,7 +41,7 @@ class HttpStatusOkHttpClientHealthCheckTest {
         // given
         final Response response = new Response.Builder()
                 .code(BAD_REQUEST.value())
-                .request(new Request.Builder().url("http://test.com").build())
+                .request(new Request.Builder().url("http://integration.com").build())
                 .protocol(HTTP_1_1)
                 .message("message")
                 .build();

@@ -1,4 +1,4 @@
-package com.github.wenhao.test;
+package com.github.wenhao.integration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan("com.github.wenhao.test")
-@EnableFeignClients("com.github.wenhao.test")
+@ComponentScan("com.github.wenhao.integration")
+@EnableFeignClients("com.github.wenhao.integration")
 @Configuration
 public class Application {
 

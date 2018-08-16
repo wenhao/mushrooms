@@ -4,7 +4,7 @@
 
     <soap:Body xmlns:m="http://www.example.org/stock">
         <m:GetBookRequest>
-            <m:BookName>Java</m:BookName>
+            <m:BookName>${model.name}</m:BookName>
         </m:GetBookRequest>
     </soap:Body>
 
