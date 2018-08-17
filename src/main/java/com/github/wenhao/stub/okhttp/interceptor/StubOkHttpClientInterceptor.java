@@ -44,7 +44,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .build();
 
-        final Optional<Stub> stubOptional = properties.getOkhttp().getStubs().stream()
+        final Optional<Stub> stubOptional = properties.getStubs().stream()
                 .filter(stub -> realRequest.getUrlButParameters().endsWith(stub.getUri()) &&
                         realRequest.getMethod().equalsIgnoreCase(stub.getMethod()) &&
                         bodyMatcher.isMatch(resourceReader.readAsString(stub.getBody()), realRequest.getBody()))

@@ -41,21 +41,17 @@ logging:
 
 mushrooms:
   failover:
-    okhttp:
-      enabled: true
-    resttemplate:
-      enabled: true
+    enabled: true
     headers:
       - content-type
   stub:
-    okhttp:
-      enabled: true
-      stubs:
-        - uri: "http://localhost:8080/stub"
-          method: POST
-          body: /stubs/stub_rest_request.json
-          response: /stubs/stub_rest_response.json
-        - uri: "http://localhost:8080/stub/get_book"
-          method: POST
-          body: /stubs/stub_soap_request.xml
-          response: /stubs/stub_soap_response.xml
+    enabled: true
+    stubs:
+      - uri: "http://localhost:8080/stub"
+        method: POST
+        body: /stubs/stub_rest_request.json
+        response: /stubs/stub_rest_response.json
+      - uri: "http://localhost:8080/stub/get_book"
+        method: POST
+        body: /stubs/stub_soap_request.xml
+        response: /stubs/stub_soap_response.xml

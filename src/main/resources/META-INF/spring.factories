@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.wenhao.common.config.MushroomsAutoConfiguration,\
+com.github.wenhao.common.config.OkHttpConfiguration,\
 com.github.wenhao.failover.config.MushroomsFailoverAutoConfiguration,\
 com.github.wenhao.stub.config.MushroomsStubAutoConfiguration

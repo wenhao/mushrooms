@@ -7,11 +7,6 @@ import com.github.wenhao.failover.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.failover.okhttp.interceptor.CachingOkHttpClientInterceptor;
 import com.github.wenhao.failover.properties.MushroomsFailoverConfigurationProperties;
 import com.github.wenhao.failover.repository.FailoverRepository;
-import com.github.wenhao.failover.resttemplate.config.CachingRestTemplatePostProcessor;
-import com.github.wenhao.failover.resttemplate.health.HttpStatusRestTemplateHealthCheck;
-import com.github.wenhao.failover.resttemplate.health.RestTemplateHealthCheck;
-import com.github.wenhao.failover.resttemplate.interceptor.CachingRestTemplateInterceptor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -20,16 +15,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.List;
 
 @Configuration
-@ConditionalOnExpression("${mushrooms.failover.okhttp.enabled:true} || ${mushrooms.failover.resttemplate.enabled:true}")
+@ConditionalOnProperty(prefix = "mushrooms.failover", name = "enabled", havingValue = "true")
 public class MushroomsFailoverAutoConfiguration {
 
     @Bean
     @Order
-    @ConditionalOnProperty(prefix = "mushrooms.failover.okhttp", name = "enabled", havingValue = "true")
     public CachingOkHttpClientInterceptor cachingOkHttpClientInterceptor(FailoverRepository repository,
                                                                          MushroomsFailoverConfigurationProperties properties,
                                                                          List<OkHttpClientHealthCheck> healthChecks) {
@@ -37,31 +33,9 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
-    @Order(5)
-    @ConditionalOnProperty(prefix = "mushrooms.failover.okhttp", name = "enabled", havingValue = "true")
+    @Order(10)
     public HttpStatusOkHttpClientHealthCheck httpStatusOkHttpClientHealthCheck() {
         return new HttpStatusOkHttpClientHealthCheck();
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "mushrooms.failover.resttemplate", name = "enabled", havingValue = "true")
-    public CachingRestTemplatePostProcessor cachingRestTemplatePostProcessor(CachingRestTemplateInterceptor interceptor) {
-        return new CachingRestTemplatePostProcessor(interceptor);
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "mushrooms.failover.resttemplate", name = "enabled", havingValue = "true")
-    public CachingRestTemplateInterceptor cachingRestTemplateInterceptor(FailoverRepository repository,
-                                                                         MushroomsFailoverConfigurationProperties properties,
-                                                                         List<RestTemplateHealthCheck> healthChecks) {
-        return new CachingRestTemplateInterceptor(repository, properties, healthChecks);
-    }
-
-    @Bean
-    @Order(5)
-    @ConditionalOnProperty(prefix = "mushrooms.failover.resttemplate", name = "enabled", havingValue = "true")
-    public HttpStatusRestTemplateHealthCheck httpStatusRestTemplateHealthCheck() {
-        return new HttpStatusRestTemplateHealthCheck();
     }
 
     @Bean
@@ -73,13 +47,22 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
-    public FailoverRepository failoverRepository(HashOperations<String, Request, Response> cacheHashOperations,
+    public FailoverRepository failoverRepository(HashOperations<String, Request, Response> hashOperations,
                                                  MushroomsFailoverConfigurationProperties properties) {
-        return new FailoverRepository(cacheHashOperations, properties);
+        return new FailoverRepository(hashOperations, properties);
     }
 
     @Bean
     public MushroomsFailoverConfigurationProperties mushroomsFailoverConfigurationProperties() {
         return new MushroomsFailoverConfigurationProperties();
+    }
+
+    @Bean
+    public HashOperations<String, Request, Response> hashOperations(RedisTemplate redisTemplate) {
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Request.class));
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Response.class));
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate.opsForHash();
     }
 }

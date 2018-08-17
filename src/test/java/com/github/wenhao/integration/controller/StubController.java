@@ -23,7 +23,8 @@ public class StubController {
                 .name("Java")
                 .price(new BigDecimal("34.5"))
                 .build();
-        return ResponseEntity.ok(book);
+        return ResponseEntity.status(500).build();
+//        return ResponseEntity.ok(book);
     }
 
     @PostMapping(consumes = TEXT_XML_VALUE, value = "get_book")

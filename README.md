@@ -16,13 +16,14 @@ Remote service integration, especially based on HTTP protocol, e.g. web service,
 
 ##### Failover
 
-* RestTemplate Request Cache.
-* Okhttp Request Cache with @FeignClient.
+Failover feature rely on okhhtp3, make sure FeignClient/RestTemplate are using okhttp3.
+
+* FeignClient/RestTemplate respond with cached data when remote server failure.
 
 ##### Stub
 
-* Stub REST API via @FeignClient.
-* Stub Soap API via @FeignClient.
+* Stub REST API.
+* Stub Soap API.
 
 ### Gradle
 
@@ -32,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:2.1.8'
+    compile 'com.github.wenhao:mushrooms:2.2.0'
 }
 ```
 
@@ -42,7 +43,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>2.1.8</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -58,18 +59,33 @@ dependencies {
 
 ##### application.yml
 
-Enabled mushrooms failover and set included headers, don't inlcude any frequent changeable header.
+Enabled mushrooms failover and set included headers, don't include any frequent changeable header.
 
 ```yaml
 mushrooms:
   failover:
-    okhttp:
-      enabled: true
-    resttemplate:
-      enabled: true
+    enabled: true
     headers:
       - application-specific
       - content-type
+```
+
+Enabled RestTemplate failover, Customize RestTemplate by using Okhttp3.
+
+```java
+@Configuration
+public class RestTemplateConfiguration {
+
+  @Bean
+  public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
+    return new RestTemplate(clientHttpRequestFactory);
+  }
+
+  @Bean
+  public ClientHttpRequestFactory okHttp3ClientHttpRequestFactory(OkHttpClient okHttpClient) {
+    return new OkHttp3ClientHttpRequestFactory(okHttpClient);
+  }
+}
 ```
 
 #### Stub Configuration
@@ -80,26 +96,24 @@ Stub REST API
 ```yaml
 mushrooms:
   stub:
-    okhttp:
-      enabled: true
-      stubs:
-        - uri: "${READL_HOST:http://localhost:8080}/stub/book"
-          method: POST
-          body: /stubs/stub_rest_request.json
-          response: /stubs/stub_rest_response.json
+    enabled: true
+    stubs:
+      - uri: "${READL_HOST:http://localhost:8080}/stub/book"
+        method: POST
+        body: /stubs/stub_rest_request.json
+        response: /stubs/stub_rest_response.json
 ```
 
 Stub Soap API
 ```yaml
 mushrooms:
   stub:
-    okhttp:
-      enabled: true
-      stubs:
-        - uri: "${READL_HOST:http://localhost:8080}/stub/get_book"
-          method: POST
-          body: /stubs/stub_soap_request.xml
-          response: /stubs/stub_soap_response.xml
+    enabled: true
+    stubs:
+      - uri: "${READL_HOST:http://localhost:8080}/stub/get_book"
+        method: POST
+        body: /stubs/stub_soap_request.xml
+        response: /stubs/stub_soap_response.xml
 ```
 
 #### Generic Configuration
@@ -142,26 +156,6 @@ logging:
 #### Customization
 
 As default, failover only applys if httpstatus not equals to 200.
-
-##### Custom RestTemplate Health Check
-
-As default, [HttpStatusRestTemplateHealthCheck.java] added, customize health checks if need:
-
-```java
-@Component
-public class CustomRestTemplateHealthCheck implements RestTemplateHealthCheck {
-
-    @Override
-    public boolean health(final ClientHttpResponseWrapper response) {
-        try {
-            final JSONObject jsonObject = new JSONObject(response.getBodyAsString());
-            return jsonObject.getBoolean("success");
-        } catch (JSONException e) {
-            return false;
-        }
-    }
-}
-```
 
 ##### Custom OkHttp Health Check
 

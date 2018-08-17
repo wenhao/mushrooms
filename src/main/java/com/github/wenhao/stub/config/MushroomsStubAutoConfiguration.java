@@ -7,7 +7,6 @@ import com.github.wenhao.stub.matcher.BodyMatcher;
 import com.github.wenhao.stub.matcher.JsonMatcher;
 import com.github.wenhao.stub.okhttp.interceptor.StubOkHttpClientInterceptor;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +14,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ResourceLoader;
 
 @Configuration
-@ConditionalOnExpression("${mushrooms.stub.okhttp.enabled:true} || ${mushrooms.stub.resttemplate.enabled:true}")
+@ConditionalOnProperty(prefix = "mushrooms.stub", name = "enabled", havingValue = "true")
 public class MushroomsStubAutoConfiguration {
 
     @Bean
     @Order(10)
-    @ConditionalOnProperty(prefix = "mushrooms.stub.okhttp", name = "enabled", havingValue = "true")
     public StubOkHttpClientInterceptor stubOkHttpClientInterceptor(MushroomsStubConfigurationProperties properties,
                                                                    StubResponseDataLoader dataLoader,
                                                                    ResourceReader resourceReader,
