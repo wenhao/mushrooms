@@ -38,10 +38,10 @@ public class OkHttpConfiguration {
                                        List<Interceptor> interceptors) {
         Boolean followRedirects = httpClientProperties.isFollowRedirects();
         Integer connectTimeout = httpClientProperties.getConnectionTimeout();
-        OkHttpClient.Builder builder = httpClientFactory.createBuilder(httpClientProperties.isDisableSslValidation()).
-                connectTimeout(connectTimeout, TimeUnit.MILLISECONDS).
-                followRedirects(followRedirects).
-                connectionPool(connectionPool);
+        OkHttpClient.Builder builder = httpClientFactory.createBuilder(httpClientProperties.isDisableSslValidation())
+                .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
+                .followRedirects(followRedirects)
+                .connectionPool(connectionPool);
         interceptors.forEach(builder::addInterceptor);
         this.okHttpClient = builder.build();
         return this.okHttpClient;
