@@ -105,7 +105,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .request(request)
                     .message(e.getMessage())
                     .protocol(HTTP_1_1)
-                    .body(ResponseBody.create(APPLICATION_JSON_UTF8, ""))
+                    .body(ResponseBody.create(APPLICATION_JSON_UTF8, e.getMessage()))
                     .headers(Headers.of("Content-Type", APPLICATION_JSON_UTF8.toString()))
                     .build();
         }
