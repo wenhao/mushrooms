@@ -126,7 +126,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         try {
             requestBody.writeTo(buffer);
             Charset charset = Optional.ofNullable(requestBody.contentType()).map(contentType -> contentType.charset(UTF8)).orElse(UTF8);
-            return buffer.readString(charset);
+            return buffer.clone().readString(charset);
         } catch (Exception e) {
             return "";
         }

@@ -2,7 +2,6 @@ package com.github.wenhao.stub.okhttp.interceptor;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.stub.domain.Stub;
 import com.github.wenhao.stub.matcher.RequestMatcher;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +32,20 @@ public class StubOkHttpClientInterceptor implements Interceptor {
 
     @Override
     public okhttp3.Response intercept(final Chain chain) throws IOException {
-        okhttp3.Request request = chain.request();
+        final okhttp3.Request request = chain.request();
+        final Request realRequest = getRequest(request);
+        return properties.getStubs().stream()
+                .filter(stub -> requestMatchers.stream().allMatch(matcher -> matcher.match(stub.getRequest(), realRequest)))
+                .findFirst()
+                .map(stub -> {
+                    log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
+                    return getResponse(request, stub.getResponse());
+                })
+                .orElse(chain.proceed(request));
+    }
 
-        final Request realRequest = Request.builder()
+    private Request getRequest(final okhttp3.Request request) {
+        return Request.builder()
                 .path(substringBefore(request.url().toString(), "?"))
                 .method(request.method())
                 .headers(request.headers().names().stream()
@@ -44,16 +54,6 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .contentType(request.body().contentType().toString())
                 .build();
-
-        final Optional<Stub> stubOptional = properties.getStubs().stream()
-                .filter(stub -> requestMatchers.stream().allMatch(matcher -> matcher.match(stub.getRequest(), realRequest)))
-                .findFirst();
-
-        if (stubOptional.isPresent()) {
-            log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
-            return getResponse(request, stubOptional.get().getResponse());
-        }
-        return chain.proceed(request);
     }
 
     private okhttp3.Response getResponse(final okhttp3.Request request, final String body) {
