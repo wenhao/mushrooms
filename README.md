@@ -99,7 +99,7 @@ mushrooms:
     enabled: true
     stubs:
       - request:
-          path: ${READL_HOST:http://localhost:8080}/stub
+          path: ${REAL_HOST:http://localhost:8080}/stub
           method: POST
           body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json
@@ -112,7 +112,7 @@ mushrooms:
     enabled: true
     stubs:
       - request:
-          path: http://localhost:8080/stub/get_book
+          path: ${REAL_HOST:http://localhost:8080}/stub/get_book
           method: POST
           body: /stubs/stub_soap_request.xml
         response: /stubs/stub_soap_response.xml
@@ -128,11 +128,11 @@ A **request matcher** can contain any of the following matchers:
 * headers - key to multiple values as a plain text, regular expression.
 * cookies - key to value as a plain text, regular expression.
 * body
-    XPath
-    XML - full or partial match. 
-    JSON - full or partial match. 
-    regular expression
-    plain text (i.e. exact match)
+  * XPath
+  * XML - full or partial match. 
+  * JSON - full or partial match. 
+  * regular expression
+  * plain text (i.e. exact match)
     
 Full setup
 ```yaml
@@ -141,7 +141,7 @@ mushrooms:
     enabled: true
     stubs:
       - request:
-          path: ${READL_HOST:http://localhost:8080}/stub(.*)
+          path: ${REAL_HOST:http://localhost:8080}/stub(.*)
           parameters: 
             - key: [A-z]{0,10}
               value: [A-Z0-9]+
