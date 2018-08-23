@@ -2,6 +2,7 @@ package com.github.wenhao.stub.config;
 
 import com.github.wenhao.stub.dataloader.ResourceReader;
 import com.github.wenhao.stub.matcher.BodyMatcher;
+import com.github.wenhao.stub.matcher.CookieMatcher;
 import com.github.wenhao.stub.matcher.HeaderMatcher;
 import com.github.wenhao.stub.matcher.JsonBodyMatcher;
 import com.github.wenhao.stub.matcher.MethodMatcher;
@@ -64,6 +65,12 @@ public class MushroomsStubAutoConfiguration {
     @Order(20)
     public RequestMatcher headerMatcher() {
         return new HeaderMatcher();
+    }
+
+    @Bean
+    @Order(25)
+    public RequestMatcher cookieMatcher() {
+        return new CookieMatcher();
     }
 
     @Bean

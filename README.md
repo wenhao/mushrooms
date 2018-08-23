@@ -149,6 +149,9 @@ mushrooms:
           headers:
             - key: [A-z]{0,10}
               value: [A-Z0-9]+
+          cookies:
+            - key: [A-z]{0,10}
+              value: [A-Z0-9]+    
           body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json
 ```    
