@@ -92,7 +92,7 @@ public class RestTemplateConfiguration {
 
 Enabled mushrooms stub and set stub request and response.
 
-Stub REST API
+**Stub REST API**
 ```yaml
 mushrooms:
   stub:
@@ -105,7 +105,7 @@ mushrooms:
         response: /stubs/stub_rest_response.json
 ```
 
-Stub Soap API
+**Stub Soap API**
 ```yaml
 mushrooms:
   stub:
@@ -118,7 +118,7 @@ mushrooms:
         response: /stubs/stub_soap_response.xml
 ```
 
-Request Matchers
+**Request Matchers**
 
 A **request matcher** can contain any of the following matchers:
 
@@ -134,7 +134,7 @@ A **request matcher** can contain any of the following matchers:
   * regular expression
   * plain text (i.e. exact match)
     
-Full setup
+**Full setup**
 ```yaml
 mushrooms:
   stub:
