@@ -34,45 +34,49 @@ import static org.springframework.http.HttpStatus.OK;
 public class CachingOkHttpClientInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
-    private static final MediaType APPLICATION_JSON_UTF8 = MediaType.parse("application/json;charset=UTF-8");
     private final FailoverRepository repository;
     private final MushroomsFailoverConfigurationProperties properties;
     private final List<OkHttpClientHealthCheck> healthChecks;
 
     @Override
     public okhttp3.Response intercept(final Chain chain) throws IOException {
-        okhttp3.Request request = chain.request();
+        final okhttp3.Request request = chain.request();
+        final Request cacheRequest = getCacheRequest(request);
+        final okhttp3.Response response = getRemoteResponse(chain, request);
+        if (properties.getExcludes().stream().anyMatch(exclude -> cacheRequest.getPath().matches(exclude))) {
+            return response;
+        }
+        boolean isHealth = healthChecks.stream().allMatch(check -> check.health(response));
+        if (isHealth) {
+            log.debug("[MUSHROOMS]Refresh cached data for request\n{}", cacheRequest.toString());
+            repository.save(cacheRequest, getCacheResponse(response));
+            return response;
+        }
+        return Optional.ofNullable(repository.get(cacheRequest))
+                .map(resp -> {
+                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}", cacheRequest.toString());
+                    return getResponse(request, response, resp);
+                })
+                .orElse(response);
+    }
 
-        final Request cacheRequest = Request.builder()
+    private Request getCacheRequest(final okhttp3.Request request) {
+        return Request.builder()
                 .path(substringBefore(request.url().toString(), "?"))
                 .headers(getHeaders(request))
                 .method(request.method())
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .contentType(request.body().contentType().toString())
                 .build();
+    }
 
-        final okhttp3.Response response = getRemoteResponse(chain, request);
-        if (properties.getExcludes().stream().anyMatch(exclude -> cacheRequest.getPath().matches(exclude))) {
-            return response;
-        }
-        boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
-        if (isHealth) {
-            log.debug("[MUSHROOMS]Refresh cached data for request\n{}", cacheRequest.toString());
-            final Response cacheResponse = Response.builder().headers(response.headers().names().stream()
-                    .map(name -> Header.builder().name(name).value(response.headers().get(name)).build())
-                    .collect(toList()))
-                    .body(getResponseBody(response.body()))
-                    .build();
-            repository.save(cacheRequest, cacheResponse);
-            return getResponse(request, response, cacheResponse);
-        }
-        return Optional.ofNullable(repository.get(cacheRequest))
-                .map(resp -> {
-                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}", cacheRequest.toString());
-                    return resp;
-                })
-                .map(resp -> getResponse(request, response, resp))
-                .orElse(getResponse(request, response, Response.empty()));
+    private Response getCacheResponse(final okhttp3.Response response) {
+        return Response.builder().headers(response.headers().names().stream()
+                .map(name -> Header.builder().name(name).value(response.headers().get(name)).build())
+                .collect(toList()))
+                .body(getResponseBody(response.body()))
+                .contentType(response.body().contentType().toString())
+                .build();
     }
 
     private okhttp3.Response getResponse(final okhttp3.Request request, final okhttp3.Response response, final Response cacheResponse) {
@@ -81,9 +85,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message(response.message()))
                 .map(resp -> resp.protocol(response.protocol()))
-                .map(resp -> Optional.ofNullable(response.body())
-                        .map(respBody -> resp.body(ResponseBody.create(respBody.contentType(), cacheResponse.getBody())))
-                        .orElse(resp.body(ResponseBody.create(APPLICATION_JSON_UTF8, cacheResponse.getBody()))))
+                .map(resp -> resp.body(ResponseBody.create(MediaType.parse(cacheResponse.getContentType()), cacheResponse.getBody())))
                 .map(resp -> resp.headers(Headers.of(cacheResponse.getHeaders().stream()
                         .collect(toMap(Header::getName, Header::getValue)))))
                 .map(resp -> Optional.ofNullable(response.cacheResponse()).map(resp::cacheResponse).orElse(resp))
@@ -105,8 +107,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                     .request(request)
                     .message(e.getMessage())
                     .protocol(HTTP_1_1)
-                    .body(ResponseBody.create(APPLICATION_JSON_UTF8, e.getMessage()))
-                    .headers(Headers.of("Content-Type", APPLICATION_JSON_UTF8.toString()))
+                    .body(ResponseBody.create(request.body().contentType(), e.getMessage()))
                     .build();
         }
     }

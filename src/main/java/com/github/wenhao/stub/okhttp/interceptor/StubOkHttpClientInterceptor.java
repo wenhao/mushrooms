@@ -7,9 +7,7 @@ import com.github.wenhao.stub.matcher.RequestMatcher;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.Buffer;
@@ -29,7 +27,6 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class StubOkHttpClientInterceptor implements Interceptor {
 
-    private static final MediaType APPLICATION_JSON_UTF8 = MediaType.parse("application/json;charset=UTF-8");
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final MushroomsStubConfigurationProperties properties;
     private final List<RequestMatcher> requestMatchers;
@@ -60,14 +57,12 @@ public class StubOkHttpClientInterceptor implements Interceptor {
     }
 
     private okhttp3.Response getResponse(final okhttp3.Request request, final String body) {
-        final String contentType = Optional.ofNullable(request.headers().get("Content-Type")).orElse(APPLICATION_JSON_UTF8.toString());
         return Mono.just(new okhttp3.Response.Builder())
                 .map(resp -> resp.code(OK.value()))
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message("[MUSHROOMS]Respond with stub data"))
                 .map(resp -> resp.protocol(HTTP_1_1))
-                .map(resp -> resp.body(ResponseBody.create(MediaType.parse(contentType), body)))
-                .map(resp -> resp.headers(Headers.of("Content-Type", contentType)))
+                .map(resp -> resp.body(ResponseBody.create(request.body().contentType(), body)))
                 .block()
                 .build();
     }
@@ -77,7 +72,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
         try {
             requestBody.writeTo(buffer);
             Charset charset = Optional.ofNullable(requestBody.contentType()).map(contentType -> contentType.charset(UTF8)).orElse(UTF8);
-            return buffer.readString(charset);
+            return buffer.clone().readString(charset);
         } catch (Exception e) {
             return "";
         }
