@@ -126,7 +126,6 @@ A **request matcher** can contain any of the following matchers:
 * path - string value as a plain text, regular expression.
 * query string - key to multiple values as a plain text, regular expression.
 * headers - key to multiple values as a plain text, regular expression.
-* cookies - key to value as a plain text, regular expression.
 * body
     * XPath
     * XML - full or partial match. 
@@ -149,9 +148,6 @@ mushrooms:
           headers:
             - key: [A-z]{0,10}
               value: [A-Z0-9]+
-          cookies:
-            - key: [A-z]{0,10}
-              value: [A-Z0-9]+    
           body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json
 ```    

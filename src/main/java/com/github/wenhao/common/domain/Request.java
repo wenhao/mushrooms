@@ -23,7 +23,6 @@ public class Request implements Serializable {
     private List<Parameter> parameters;
     private String body;
     private List<Header> headers;
-    private List<Cookie> cookies;
     private String contentType;
 
     public String toString() {
