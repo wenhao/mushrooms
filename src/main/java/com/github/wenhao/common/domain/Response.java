@@ -31,7 +31,7 @@ public class Response {
                 .body("")
                 .headers(Stream.of(Header.builder()
                         .name("Content-Type")
-                        .values(Stream.of(APPLICATION_JSON_UTF8.toString()).collect(toList()))
+                        .value(APPLICATION_JSON_UTF8.toString())
                         .build())
                         .collect(toList()))
                 .build();

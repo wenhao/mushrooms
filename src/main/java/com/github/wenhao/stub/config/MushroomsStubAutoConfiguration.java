@@ -1,10 +1,15 @@
 package com.github.wenhao.stub.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wenhao.stub.dataloader.ResourceReader;
-import com.github.wenhao.stub.dataloader.StubResponseDataLoader;
 import com.github.wenhao.stub.matcher.BodyMatcher;
-import com.github.wenhao.stub.matcher.JsonMatcher;
+import com.github.wenhao.stub.matcher.HeaderMatcher;
+import com.github.wenhao.stub.matcher.JsonBodyMatcher;
+import com.github.wenhao.stub.matcher.MethodMatcher;
+import com.github.wenhao.stub.matcher.ParameterMatcher;
+import com.github.wenhao.stub.matcher.PathMatcher;
+import com.github.wenhao.stub.matcher.RequestBodyMatcher;
+import com.github.wenhao.stub.matcher.RequestMatcher;
+import com.github.wenhao.stub.matcher.XMLBodyMatcher;
 import com.github.wenhao.stub.okhttp.interceptor.StubOkHttpClientInterceptor;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ResourceLoader;
 
+import java.util.List;
+
 @Configuration
 @ConditionalOnProperty(prefix = "mushrooms.stub", name = "enabled", havingValue = "true")
 public class MushroomsStubAutoConfiguration {
@@ -20,21 +27,14 @@ public class MushroomsStubAutoConfiguration {
     @Bean
     @Order(10)
     public StubOkHttpClientInterceptor stubOkHttpClientInterceptor(MushroomsStubConfigurationProperties properties,
-                                                                   StubResponseDataLoader dataLoader,
-                                                                   ResourceReader resourceReader,
-                                                                   BodyMatcher bodyMatcher) {
-        return new StubOkHttpClientInterceptor(properties, dataLoader, resourceReader, bodyMatcher);
+                                                                   List<RequestMatcher> requestMatchers) {
+        return new StubOkHttpClientInterceptor(properties, requestMatchers);
     }
 
 
     @Bean
-    public MushroomsStubConfigurationProperties mushroomsStubConfigurationProperties() {
-        return new MushroomsStubConfigurationProperties();
-    }
-
-    @Bean
-    public StubResponseDataLoader stubResponseDateLoader(ResourceReader resourceReader, BodyMatcher bodyMatcher) {
-        return new StubResponseDataLoader(resourceReader, bodyMatcher);
+    public MushroomsStubConfigurationProperties mushroomsStubConfigurationProperties(ResourceReader resourceReader) {
+        return new MushroomsStubConfigurationProperties(resourceReader);
     }
 
     @Bean
@@ -43,12 +43,42 @@ public class MushroomsStubAutoConfiguration {
     }
 
     @Bean
-    public BodyMatcher bodyMatcher(JsonMatcher jsonMatcher) {
-        return new BodyMatcher(jsonMatcher);
+    @Order(5)
+    public RequestMatcher pathMatcher() {
+        return new PathMatcher();
     }
 
     @Bean
-    public JsonMatcher jsonMatcher(ObjectMapper objectMapper) {
-        return new JsonMatcher(objectMapper);
+    @Order(10)
+    public RequestMatcher parameterMatcher() {
+        return new ParameterMatcher();
     }
+
+    @Bean
+    @Order(15)
+    public RequestMatcher methodMatcher() {
+        return new MethodMatcher();
+    }
+
+    @Bean
+    @Order(20)
+    public RequestMatcher headerMatcher() {
+        return new HeaderMatcher();
+    }
+
+    @Bean
+    public BodyMatcher bodyMatcher(List<RequestBodyMatcher> requestBodyMatchers) {
+        return new BodyMatcher(requestBodyMatchers);
+    }
+
+    @Bean
+    public RequestBodyMatcher jsonBodyMatcher() {
+        return new JsonBodyMatcher();
+    }
+
+    @Bean
+    public RequestBodyMatcher xmlBodyMatcher() {
+        return new XMLBodyMatcher();
+    }
+
 }

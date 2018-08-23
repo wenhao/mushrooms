@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Header implements Serializable {
+public class Parameter implements Serializable {
 
     private String name;
     private String value;

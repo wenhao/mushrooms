@@ -25,6 +25,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static okhttp3.Protocol.HTTP_1_1;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -43,22 +44,22 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         okhttp3.Request request = chain.request();
 
         final Request cacheRequest = Request.builder()
-                .uri(request.url().uri())
+                .path(substringBefore(request.url().toString(), "?"))
                 .headers(getHeaders(request))
                 .method(request.method())
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
+                .contentType(request.body().contentType().toString())
                 .build();
 
         final okhttp3.Response response = getRemoteResponse(chain, request);
-        final boolean isExcluded = properties.getExcludes().stream().anyMatch(exclude -> cacheRequest.getUrlButParameters().endsWith(exclude));
-        if (isExcluded) {
+        if (properties.getExcludes().stream().anyMatch(exclude -> cacheRequest.getPath().matches(exclude))) {
             return response;
         }
         boolean isHealth = healthChecks.stream().allMatch(okHttpClientInterceptor -> okHttpClientInterceptor.health(response));
         if (isHealth) {
-            log.debug("[MUSHROOMS]Refresh cached data for request\n{}.", cacheRequest.toString());
-            final Response cacheResponse = Response.builder().headers(response.headers().toMultimap().entrySet().stream()
-                    .map(entry -> Header.builder().name(entry.getKey()).values(entry.getValue()).build())
+            log.debug("[MUSHROOMS]Refresh cached data for request\n{}", cacheRequest.toString());
+            final Response cacheResponse = Response.builder().headers(response.headers().names().stream()
+                    .map(name -> Header.builder().name(name).value(response.headers().get(name)).build())
                     .collect(toList()))
                     .body(getResponseBody(response.body()))
                     .build();
@@ -67,8 +68,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
         }
         return Optional.ofNullable(repository.get(cacheRequest))
                 .map(resp -> {
-                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}.", cacheRequest.toString());
-                    log.debug("[MUSHROOMS]Respond with cached data for error response\n{}.", getResponseBody(response.body()));
+                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}", cacheRequest.toString());
                     return resp;
                 })
                 .map(resp -> getResponse(request, response, resp))
@@ -85,7 +85,7 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
                         .map(respBody -> resp.body(ResponseBody.create(respBody.contentType(), cacheResponse.getBody())))
                         .orElse(resp.body(ResponseBody.create(APPLICATION_JSON_UTF8, cacheResponse.getBody()))))
                 .map(resp -> resp.headers(Headers.of(cacheResponse.getHeaders().stream()
-                        .collect(toMap(Header::getName, header -> header.getValues().get(0))))))
+                        .collect(toMap(Header::getName, Header::getValue)))))
                 .map(resp -> Optional.ofNullable(response.cacheResponse()).map(resp::cacheResponse).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.handshake()).map(resp::handshake).orElse(resp))
                 .map(resp -> Optional.ofNullable(response.networkResponse()).map(resp::networkResponse).orElse(resp))
@@ -112,8 +112,8 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
     }
 
     private List<Header> getHeaders(final okhttp3.Request request) {
-        final List<Header> headers = request.headers().toMultimap().entrySet().stream()
-                .map(entry -> Header.builder().name(entry.getKey()).values(entry.getValue()).build())
+        final List<Header> headers = request.headers().names().stream()
+                .map(name -> Header.builder().name(name).value(request.headers().get(name)).build())
                 .collect(toList());
         return headers.stream()
                 .filter(header -> properties.getHeaders().contains(header.getName()))

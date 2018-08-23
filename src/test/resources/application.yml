@@ -47,11 +47,13 @@ mushrooms:
   stub:
     enabled: true
     stubs:
-      - uri: "http://localhost:8080/stub"
-        method: POST
-        body: /stubs/stub_rest_request.json
+      - request:
+          path: http://localhost:8080/stub
+          method: POST
+          body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json
-      - uri: "http://localhost:8080/stub/get_book"
-        method: POST
-        body: /stubs/stub_soap_request.xml
+      - request:
+          path: http://localhost:8080/stub/get_book
+          method: POST
+          body: /stubs/stub_soap_request.xml
         response: /stubs/stub_soap_response.xml

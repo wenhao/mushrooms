@@ -39,8 +39,8 @@ dependencies {
     compileOnly "io.github.openfeign:feign-okhttp:9.5.1"
     compileOnly 'com.squareup.okhttp3:okhttp-urlconnection:3.8.1'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.github.fge:json-patch:1.9'
     implementation 'org.json:json:20180130'
+    implementation 'org.skyscreamer:jsonassert:1.5.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -148,10 +148,8 @@ jacocoTestReport {
                             '**/interceptor/*.class',
                             '**/response/*.class',
                             '**/config/*.class',
-                            '**/OkHttpClientHealthCheck.class',
-                            '**/dataloader/*.class',
-                            '**/matcher/*.class',
-                            '**/RestTemplateHealthCheck.class'
+                            '**/XMLBodyMatcher.class',
+                            '**/dataloader/*.class'
                     ]
             )
         })
@@ -170,10 +168,8 @@ jacocoTestCoverageVerification {
                     '**.interceptor.*',
                     '**.response.*',
                     '**.config.*',
-                    '**.health.OkHttpClientHealthCheck',
-                    '**.dataloader.*',
-                    '**.matcher.*',
-                    '**.health.RestTemplateHealthCheck'
+                    '**.XMLBodyMatcher',
+                    '**.dataloader.*'
             ]
 
             limit {

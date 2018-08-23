@@ -1,6 +1,5 @@
 package com.github.wenhao.integration.client;
 
-import feign.Headers;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
         name = "SOAP",
         url = "http://localhost:8080"
 )
-@Headers("Content-Type: text/xml;charset=UTF-8")
 public interface SoapClient {
 
-    @PostMapping("stub/get_book")
+    @PostMapping(value = "stub/get_book", consumes = "text/xml;charset=UTF-8")
     Response getBook(@RequestBody String request);
 }

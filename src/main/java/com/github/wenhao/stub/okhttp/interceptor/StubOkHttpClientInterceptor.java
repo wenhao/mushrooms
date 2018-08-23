@@ -1,11 +1,9 @@
 package com.github.wenhao.stub.okhttp.interceptor;
 
+import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
-import com.github.wenhao.common.domain.Response;
-import com.github.wenhao.stub.dataloader.ResourceReader;
-import com.github.wenhao.stub.dataloader.StubResponseDataLoader;
 import com.github.wenhao.stub.domain.Stub;
-import com.github.wenhao.stub.matcher.BodyMatcher;
+import com.github.wenhao.stub.matcher.RequestMatcher;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,58 +17,57 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
 import static okhttp3.Protocol.HTTP_1_1;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RequiredArgsConstructor
 public class StubOkHttpClientInterceptor implements Interceptor {
 
+    private static final MediaType APPLICATION_JSON_UTF8 = MediaType.parse("application/json;charset=UTF-8");
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final MushroomsStubConfigurationProperties properties;
-    private final StubResponseDataLoader dataLoader;
-    private final ResourceReader resourceReader;
-    private final BodyMatcher bodyMatcher;
+    private final List<RequestMatcher> requestMatchers;
 
     @Override
     public okhttp3.Response intercept(final Chain chain) throws IOException {
         okhttp3.Request request = chain.request();
 
         final Request realRequest = Request.builder()
-                .uri(request.url().uri())
+                .path(substringBefore(request.url().toString(), "?"))
                 .method(request.method())
+                .headers(request.headers().names().stream()
+                        .map(name -> Header.builder().name(name).value(request.headers().get(name)).build())
+                        .collect(toList()))
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
+                .contentType(request.body().contentType().toString())
                 .build();
 
         final Optional<Stub> stubOptional = properties.getStubs().stream()
-                .filter(stub -> realRequest.getUrlButParameters().endsWith(stub.getUri()) &&
-                        realRequest.getMethod().equalsIgnoreCase(stub.getMethod()) &&
-                        bodyMatcher.isMatch(resourceReader.readAsString(stub.getBody()), realRequest.getBody()))
+                .filter(stub -> requestMatchers.stream().allMatch(matcher -> matcher.match(stub.getRequest(), realRequest)))
                 .findFirst();
 
-        if (!stubOptional.isPresent()) {
-            return chain.proceed(request);
+        if (stubOptional.isPresent()) {
+            log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
+            return getResponse(request, stubOptional.get().getResponse());
         }
-
-        return Optional.ofNullable(dataLoader.load(stubOptional.get()))
-                .map(resp -> {
-                    log.debug("[MUSHROOMS]Respond with stub data for request\n{}.", realRequest.toString());
-                    return resp;
-                })
-                .map(resp -> getResponse(request, resp))
-                .orElse(getResponse(request, Response.empty()));
+        return chain.proceed(request);
     }
 
-    private okhttp3.Response getResponse(final okhttp3.Request request, final Response response) {
+    private okhttp3.Response getResponse(final okhttp3.Request request, final String body) {
+        final String contentType = Optional.ofNullable(request.headers().get("Content-Type")).orElse(APPLICATION_JSON_UTF8.toString());
         return Mono.just(new okhttp3.Response.Builder())
                 .map(resp -> resp.code(OK.value()))
                 .map(resp -> resp.request(request))
                 .map(resp -> resp.message("[MUSHROOMS]Respond with stub data"))
                 .map(resp -> resp.protocol(HTTP_1_1))
-                .map(resp -> resp.body(ResponseBody.create(MediaType.parse(response.getContentType()), response.getBody())))
-                .map(resp -> resp.headers(Headers.of("Content-Type", response.getContentType().toString())))
+                .map(resp -> resp.body(ResponseBody.create(MediaType.parse(contentType), body)))
+                .map(resp -> resp.headers(Headers.of("Content-Type", contentType)))
                 .block()
                 .build();
     }

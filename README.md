@@ -98,7 +98,7 @@ mushrooms:
   stub:
     enabled: true
     stubs:
-      - uri: "${READL_HOST:http://localhost:8080}/stub/book"
+      - path: "${READL_HOST:http://localhost:8080}/stub/book"
         method: POST
         body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json
@@ -110,7 +110,7 @@ mushrooms:
   stub:
     enabled: true
     stubs:
-      - uri: "${READL_HOST:http://localhost:8080}/stub/get_book"
+      - path: "${READL_HOST:http://localhost:8080}/stub/get_book"
         method: POST
         body: /stubs/stub_soap_request.xml
         response: /stubs/stub_soap_response.xml

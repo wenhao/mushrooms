@@ -1,24 +1,26 @@
 package com.github.wenhao.stub.matcher;
 
+import com.github.wenhao.common.domain.Request;
 import lombok.RequiredArgsConstructor;
-import org.json.XML;
+
+import java.util.List;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 @RequiredArgsConstructor
-public class BodyMatcher {
+public class BodyMatcher implements RequestMatcher {
 
-    private final JsonMatcher jsonMatcher;
+    private final List<RequestBodyMatcher> requestBodyMatchers;
 
-    public boolean isMatch(String stubBody, String realBody) {
-        if (isSoapRequest(realBody)) {
-            String stubBodyJson = XML.toJSONObject(stubBody).toString();
-            String realBodyJson = XML.toJSONObject(realBody).toString();
-            return jsonMatcher.isJsonMatch(stubBodyJson, realBodyJson);
+    @Override
+    public boolean match(final Request stubRequest, final Request realRequest) {
+        if (isBlank(stubRequest.getBody())) {
+            return true;
         }
-        return jsonMatcher.isJsonMatch(stubBody, realBody);
+        return requestBodyMatchers.stream()
+                .filter(matcher -> matcher.isApplicable(realRequest))
+                .findFirst()
+                .map(matcher -> matcher.match(stubRequest, realRequest))
+                .orElse(false);
     }
-
-    public boolean isSoapRequest(final String realBody) {
-        return realBody.contains("<soap");
-    }
-
 }
