@@ -84,4 +84,20 @@ class ParameterMatcherTest {
         // then
         assertThat(isMatch).isTrue();
     }
+
+    @Test
+    void should_match_if_parameter_is_empty() {
+        // given
+        final Request stub = Request.builder()
+                .build();
+        final Request real = Request.builder()
+                .parameters(ImmutableList.of(Parameter.builder().name("key").value("value").build()))
+                .build();
+
+        // when
+        final boolean isMatch = parameterMatcher.match(stub, real);
+
+        // then
+        assertThat(isMatch).isTrue();
+    }
 }

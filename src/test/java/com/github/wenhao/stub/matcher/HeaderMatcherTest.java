@@ -84,4 +84,21 @@ class HeaderMatcherTest {
         // then
         assertThat(isMatch).isTrue();
     }
+
+    @Test
+    void should_match_if_header_is_empty() {
+        // given
+        final Request stub = Request.builder()
+                .build();
+        final Request real = Request.builder()
+                .headers(ImmutableList.of(Header.builder().name("key").value("value").build()))
+                .build();
+
+        // when
+        final boolean isMatch = headerMatcher.match(stub, real);
+
+        // then
+        assertThat(isMatch).isTrue();
+
+    }
 }

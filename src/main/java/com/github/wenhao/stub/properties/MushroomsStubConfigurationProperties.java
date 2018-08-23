@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @ConfigurationProperties("mushrooms.stub")
@@ -23,8 +24,8 @@ public class MushroomsStubConfigurationProperties {
 
     public void setStubs(final List<Stub> stubs) {
         stubs.forEach(stub -> {
-            stub.getRequest().setBody(resourceReader.readAsString(stub.getRequest().getBody()));
-            stub.setResponse(resourceReader.readAsString(stub.getResponse()));
+            stub.getRequest().setBody(Optional.ofNullable(stub.getRequest().getBody()).map(resourceReader::readAsString).orElse(""));
+            stub.setResponse(Optional.ofNullable(stub.getResponse()).map(resourceReader::readAsString).orElse(""));
         });
         this.stubs = stubs;
     }
