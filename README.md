@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:2.2.0'
+    compile 'com.github.wenhao:mushrooms:2.3.0'
 }
 ```
 
@@ -43,7 +43,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
@@ -98,9 +98,10 @@ mushrooms:
   stub:
     enabled: true
     stubs:
-      - path: "${READL_HOST:http://localhost:8080}/stub/book"
-        method: POST
-        body: /stubs/stub_rest_request.json
+      - request:
+          path: ${READL_HOST:http://localhost:8080}/stub
+          method: POST
+          body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json
 ```
 
@@ -110,11 +111,47 @@ mushrooms:
   stub:
     enabled: true
     stubs:
-      - path: "${READL_HOST:http://localhost:8080}/stub/get_book"
-        method: POST
-        body: /stubs/stub_soap_request.xml
+      - request:
+          path: http://localhost:8080/stub/get_book
+          method: POST
+          body: /stubs/stub_soap_request.xml
         response: /stubs/stub_soap_response.xml
 ```
+
+Request Matchers
+
+A **request matcher** can contain any of the following matchers:
+
+* method - string value as a plain text, regular expression.
+* path - string value as a plain text, regular expression.
+* query string - key to multiple values as a plain text, regular expression.
+* headers - key to multiple values as a plain text, regular expression.
+* cookies - key to value as a plain text, regular expression.
+* body
+    XPath
+    XML - full or partial match. 
+    JSON - full or partial match. 
+    regular expression
+    plain text (i.e. exact match)
+    
+Full setup
+```yaml
+mushrooms:
+  stub:
+    enabled: true
+    stubs:
+      - request:
+          path: ${READL_HOST:http://localhost:8080}/stub(.*)
+          parameters: 
+            - key: [A-z]{0,10}
+              value: [A-Z0-9]+
+          method: P(.*)
+          headers:
+            - key: [A-z]{0,10}
+              value: [A-Z0-9]+
+          body: /stubs/stub_rest_request.json
+        response: /stubs/stub_rest_response.json
+```    
 
 #### Generic Configuration
 
