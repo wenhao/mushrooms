@@ -65,6 +65,8 @@ Enabled mushrooms failover and set included headers, don't include any frequent 
 mushrooms:
   failover:
     enabled: true
+    excludes:
+      - (.*)/failover(.*)
     headers:
       - application-specific
       - content-type
