@@ -39,14 +39,6 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        return redisTemplate;
-    }
-
-    @Bean
     public FailoverRepository failoverRepository(HashOperations<String, Request, Response> hashOperations,
                                                  MushroomsFailoverConfigurationProperties properties) {
         return new FailoverRepository(hashOperations, properties);
@@ -58,7 +50,10 @@ public class MushroomsFailoverAutoConfiguration {
     }
 
     @Bean
-    public HashOperations<String, Request, Response> hashOperations(RedisTemplate redisTemplate) {
+    @ConditionalOnMissingBean
+    public HashOperations<String, Request, Response> hashOperations(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Request.class));
         redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Response.class));
