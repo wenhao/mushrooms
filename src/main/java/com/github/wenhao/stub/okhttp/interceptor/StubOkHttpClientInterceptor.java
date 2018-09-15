@@ -2,6 +2,7 @@ package com.github.wenhao.stub.okhttp.interceptor;
 
 import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
+import com.github.wenhao.stub.domain.Stub;
 import com.github.wenhao.stub.matcher.RequestMatcher;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +35,14 @@ public class StubOkHttpClientInterceptor implements Interceptor {
     public okhttp3.Response intercept(final Chain chain) throws IOException {
         final okhttp3.Request request = chain.request();
         final Request realRequest = getRequest(request);
-        return properties.getStubs().stream()
+        final Optional<Stub> optionalStub = properties.getStubs().stream()
                 .filter(stub -> requestMatchers.stream().allMatch(matcher -> matcher.match(stub.getRequest(), realRequest)))
-                .findFirst()
-                .map(stub -> {
-                    log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
-                    return getResponse(request, stub.getResponse());
-                })
-                .orElse(chain.proceed(request));
+                .findFirst();
+        if (optionalStub.isPresent()) {
+            log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
+            return getResponse(request, optionalStub.get().getResponse());
+        }
+        return chain.proceed(request);
     }
 
     private Request getRequest(final okhttp3.Request request) {

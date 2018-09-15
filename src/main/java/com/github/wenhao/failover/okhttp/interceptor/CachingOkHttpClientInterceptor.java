@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static okhttp3.Protocol.HTTP_1_1;
@@ -52,12 +53,12 @@ public class CachingOkHttpClientInterceptor implements Interceptor {
             repository.save(cacheRequest, getCacheResponse(response));
             return response;
         }
-        return Optional.ofNullable(repository.get(cacheRequest))
-                .map(resp -> {
-                    log.debug("[MUSHROOMS]Respond with cached data for request\n{}", cacheRequest.toString());
-                    return getResponse(request, response, resp);
-                })
-                .orElse(response);
+        final Response resp = repository.get(cacheRequest);
+        if (nonNull(resp)) {
+            log.debug("[MUSHROOMS]Respond with cached data for request\n{}", cacheRequest.toString());
+            return getResponse(request, response, resp);
+        }
+        return response;
     }
 
     private Request getCacheRequest(final okhttp3.Request request) {
