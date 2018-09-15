@@ -216,7 +216,7 @@ public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
 
 #### Attentions
 
-1. Stub okhttp interceptor prior to failover okhttp interceptor.
+1. Failover okhttp interceptor always prior to stub okhttp interceptor.
 2. Exclude from failover okhttp configuration if don't need it when stub.
 
 ### Copyright and license
