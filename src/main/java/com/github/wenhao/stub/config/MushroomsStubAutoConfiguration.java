@@ -26,7 +26,7 @@ import java.util.List;
 public class MushroomsStubAutoConfiguration {
 
     @Bean
-    @Order(10)
+    @Order
     public StubOkHttpClientInterceptor stubOkHttpClientInterceptor(MushroomsStubConfigurationProperties properties,
                                                                    List<RequestMatcher> requestMatchers) {
         return new StubOkHttpClientInterceptor(properties, requestMatchers);

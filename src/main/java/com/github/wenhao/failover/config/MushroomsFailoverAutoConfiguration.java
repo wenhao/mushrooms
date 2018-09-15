@@ -25,7 +25,7 @@ import java.util.List;
 public class MushroomsFailoverAutoConfiguration {
 
     @Bean
-    @Order
+    @Order(10)
     public CachingOkHttpClientInterceptor cachingOkHttpClientInterceptor(FailoverRepository repository,
                                                                          MushroomsFailoverConfigurationProperties properties,
                                                                          List<OkHttpClientHealthCheck> healthChecks) {
