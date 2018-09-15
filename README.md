@@ -132,8 +132,6 @@ A **request matcher** can contain any of the following matchers:
     * XPath
     * XML - full or partial match. 
     * JSON - full or partial match. 
-    * regular expression
-    * plain text (i.e. exact match)
     
 **Full setup**
 ```yaml

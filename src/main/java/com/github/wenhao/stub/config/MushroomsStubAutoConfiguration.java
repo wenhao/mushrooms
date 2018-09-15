@@ -10,6 +10,7 @@ import com.github.wenhao.stub.matcher.PathMatcher;
 import com.github.wenhao.stub.matcher.RequestBodyMatcher;
 import com.github.wenhao.stub.matcher.RequestMatcher;
 import com.github.wenhao.stub.matcher.XMLBodyMatcher;
+import com.github.wenhao.stub.matcher.XpathBodyMatcher;
 import com.github.wenhao.stub.okhttp.interceptor.StubOkHttpClientInterceptor;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -79,6 +80,11 @@ public class MushroomsStubAutoConfiguration {
     @Bean
     public RequestBodyMatcher xmlBodyMatcher() {
         return new XMLBodyMatcher();
+    }
+
+    @Bean
+    public RequestBodyMatcher xpathBodyMatcher() {
+        return new XpathBodyMatcher();
     }
 
 }
