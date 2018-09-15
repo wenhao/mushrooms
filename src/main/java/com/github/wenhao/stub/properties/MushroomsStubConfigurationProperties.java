@@ -24,7 +24,9 @@ public class MushroomsStubConfigurationProperties {
 
     public void setStubs(final List<Stub> stubs) {
         stubs.forEach(stub -> {
-            stub.getRequest().setBody(Optional.ofNullable(stub.getRequest().getBody()).map(resourceReader::readAsString).orElse(""));
+            if (!stub.getRequest().getBody().startsWith("xpath:")) {
+                stub.getRequest().setBody(Optional.ofNullable(stub.getRequest().getBody()).map(resourceReader::readAsString).orElse(""));
+            }
             stub.setResponse(Optional.ofNullable(stub.getResponse()).map(resourceReader::readAsString).orElse(""));
         });
         this.stubs = stubs;
