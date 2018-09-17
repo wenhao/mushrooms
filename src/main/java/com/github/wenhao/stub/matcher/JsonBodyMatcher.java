@@ -9,8 +9,8 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 public class JsonBodyMatcher implements RequestBodyMatcher {
 
     @Override
-    public boolean isApplicable(final Request request) {
-        return request.getContentType().contains("json");
+    public boolean isApplicable(final Request stubRequest, final Request realRequest) {
+        return realRequest.getContentType().contains("json");
     }
 
     @Override

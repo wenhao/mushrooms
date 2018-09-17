@@ -10,8 +10,8 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 public class XMLBodyMatcher implements RequestBodyMatcher {
 
     @Override
-    public boolean isApplicable(final Request request) {
-        return request.getContentType().contains("xml") && !request.getBody().startsWith("xpath:");
+    public boolean isApplicable(final Request stubRequest, final Request realRequest) {
+        return realRequest.getContentType().contains("xml") && !stubRequest.getBody().startsWith("xpath:");
     }
 
     @Override

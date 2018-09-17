@@ -95,17 +95,6 @@ class XpathBodyMatcherTest {
                 .contentType("text/xml")
                 .body("xpath:/bookstore/book[price>30]/price")
                 .build();
-
-        // when
-        final boolean isApplicable = matcher.isApplicable(stubRequst);
-
-        // then
-        assertThat(isApplicable).isTrue();
-    }
-
-    @Test
-    void should_not_applicable_if_xml_but_not_xpath() {
-        // given
         final Request real = Request.builder()
                 .contentType("text/xml")
                 .body("<bookstore> \n" +
@@ -119,7 +108,40 @@ class XpathBodyMatcherTest {
                 .build();
 
         // when
-        final boolean isApplicable = matcher.isApplicable(real);
+        final boolean isApplicable = matcher.isApplicable(stubRequst, real);
+
+        // then
+        assertThat(isApplicable).isTrue();
+    }
+
+    @Test
+    void should_not_applicable_if_xml_but_not_xpath() {
+        // given
+        final Request stubRequst = Request.builder()
+                .contentType("text/xml")
+                .body("<bookstore> \n" +
+                        "   <book nationality=\"ITALIAN\" category=\"COOKING\">\n" +
+                        "       <title lang=\"en\">Everyday Italian</title>\n" +
+                        "       <author>Giada De Laurentiis</author>\n" +
+                        "       <year>2005</year>\n" +
+                        "       <price>30.00</price>\n" +
+                        "   </book>\n" +
+                        "</bookstore>")
+                .build();
+        final Request real = Request.builder()
+                .contentType("text/xml")
+                .body("<bookstore> \n" +
+                        "   <book nationality=\"ITALIAN\" category=\"COOKING\">\n" +
+                        "       <title lang=\"en\">Everyday Italian</title>\n" +
+                        "       <author>Giada De Laurentiis</author>\n" +
+                        "       <year>2005</year>\n" +
+                        "       <price>30.00</price>\n" +
+                        "   </book>\n" +
+                        "</bookstore>")
+                .build();
+
+        // when
+        final boolean isApplicable = matcher.isApplicable(stubRequst, real);
 
         // then
         assertThat(isApplicable).isFalse();
@@ -133,7 +155,7 @@ class XpathBodyMatcherTest {
                 .build();
 
         // when
-        final boolean isApplicable = matcher.isApplicable(real);
+        final boolean isApplicable = matcher.isApplicable(null, real);
 
         // then
         assertThat(isApplicable).isFalse();

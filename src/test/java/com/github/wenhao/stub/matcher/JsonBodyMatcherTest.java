@@ -83,7 +83,7 @@ class JsonBodyMatcherTest {
                 .build();
 
         // when
-        final boolean isApplicable = jsonBodyMatcher.isApplicable(real);
+        final boolean isApplicable = jsonBodyMatcher.isApplicable(null, real);
 
         // then
         assertThat(isApplicable).isTrue();
@@ -97,7 +97,7 @@ class JsonBodyMatcherTest {
                 .build();
 
         // when
-        final boolean isApplicable = jsonBodyMatcher.isApplicable(real);
+        final boolean isApplicable = jsonBodyMatcher.isApplicable(null, real);
 
         // then
         assertThat(isApplicable).isFalse();

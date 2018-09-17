@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '3.0.1'
+version = '3.0.2'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -234,7 +234,7 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '3.0.1'
+            version '3.0.2'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.')
@@ -269,10 +269,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '3.0.1'
+            name = '3.0.2'
             desc = 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.'
             released = new Date()
-            vcsTag = '3.0.1'
+            vcsTag = '3.0.2'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

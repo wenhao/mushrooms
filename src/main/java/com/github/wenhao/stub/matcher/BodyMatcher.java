@@ -18,7 +18,7 @@ public class BodyMatcher implements RequestMatcher {
             return true;
         }
         return requestBodyMatchers.stream()
-                .filter(matcher -> matcher.isApplicable(realRequest))
+                .filter(matcher -> matcher.isApplicable(stubRequest, realRequest))
                 .findFirst()
                 .map(matcher -> matcher.match(stubRequest, realRequest))
                 .orElse(false);

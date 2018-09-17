@@ -79,6 +79,15 @@ class XMLBodyMatcherTest {
     @Test
     void should_applicable_if_xml() {
         // given
+        final Request stub = Request.builder()
+                .body("<bookstore> \n" +
+                        "   <book nationality=\"ITALIAN\" category=\"COOKING\">\n" +
+                        "       <title lang=\"en\">Everyday Italian</title>\n" +
+                        "       <year>2005</year>\n" +
+                        "       <author>Giada De Laurentiis</author>\n" +
+                        "   </book>\n" +
+                        "</bookstore>")
+                .build();
         final Request real = Request.builder()
                 .contentType("text/xml")
                 .body("<bookstore> \n" +
@@ -92,7 +101,7 @@ class XMLBodyMatcherTest {
                 .build();
 
         // when
-        final boolean isApplicable = xmlBodyMatcher.isApplicable(real);
+        final boolean isApplicable = xmlBodyMatcher.isApplicable(stub, real);
 
         // then
         assertThat(isApplicable).isTrue();
@@ -101,13 +110,16 @@ class XMLBodyMatcherTest {
     @Test
     void should_not_applicable_if_xml_but_xpath() {
         // given
+        final Request stub = Request.builder()
+                .body("xpath:file")
+                .build();
         final Request real = Request.builder()
                 .contentType("text/xml")
                 .body("xpath:/file")
                 .build();
 
         // when
-        final boolean isApplicable = xmlBodyMatcher.isApplicable(real);
+        final boolean isApplicable = xmlBodyMatcher.isApplicable(stub, real);
 
         // then
         assertThat(isApplicable).isFalse();
@@ -121,7 +133,7 @@ class XMLBodyMatcherTest {
                 .build();
 
         // when
-        final boolean isApplicable = xmlBodyMatcher.isApplicable(real);
+        final boolean isApplicable = xmlBodyMatcher.isApplicable(null, real);
 
         // then
         assertThat(isApplicable).isFalse();
