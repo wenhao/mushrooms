@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:2.4.4'
+    compile 'com.github.wenhao:mushrooms:3.0.0'
 }
 ```
 
@@ -39,7 +39,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>2.4.4</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
