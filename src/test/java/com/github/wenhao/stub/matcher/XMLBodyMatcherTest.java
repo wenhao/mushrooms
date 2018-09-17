@@ -81,6 +81,14 @@ class XMLBodyMatcherTest {
         // given
         final Request real = Request.builder()
                 .contentType("text/xml")
+                .body("<bookstore> \n" +
+                        "   <book nationality=\"ITALIAN\" category=\"COOKING\">\n" +
+                        "       <title lang=\"en\">Everyday Italian</title>\n" +
+                        "       <author>Giada De Laurentiis</author>\n" +
+                        "       <year>2005</year>\n" +
+                        "       <price>30.00</price>\n" +
+                        "   </book>\n" +
+                        "</bookstore>")
                 .build();
 
         // when
@@ -88,6 +96,21 @@ class XMLBodyMatcherTest {
 
         // then
         assertThat(isApplicable).isTrue();
+    }
+
+    @Test
+    void should_not_applicable_if_xml_but_xpath() {
+        // given
+        final Request real = Request.builder()
+                .contentType("text/xml")
+                .body("xpath:/file")
+                .build();
+
+        // when
+        final boolean isApplicable = xmlBodyMatcher.isApplicable(real);
+
+        // then
+        assertThat(isApplicable).isFalse();
     }
 
     @Test

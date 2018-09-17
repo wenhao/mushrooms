@@ -11,7 +11,7 @@ public class XMLBodyMatcher implements RequestBodyMatcher {
 
     @Override
     public boolean isApplicable(final Request request) {
-        return request.getContentType().contains("xml");
+        return request.getContentType().contains("xml") && !request.getBody().startsWith("xpath:");
     }
 
     @Override
