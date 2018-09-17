@@ -15,6 +15,7 @@ import com.github.wenhao.stub.okhttp.health.HttpStatusOkHttpClientHealthCheck;
 import com.github.wenhao.stub.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.stub.okhttp.interceptor.StubOkHttpClientInterceptor;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,7 @@ public class MushroomsStubAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public MushroomsStubConfigurationProperties mushroomsStubConfigurationProperties(ResourceReader resourceReader) {
         return new MushroomsStubConfigurationProperties(resourceReader);
     }

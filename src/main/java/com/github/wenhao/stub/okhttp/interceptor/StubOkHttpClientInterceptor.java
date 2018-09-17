@@ -12,7 +12,6 @@ import okhttp3.Interceptor;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.Buffer;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -68,13 +67,12 @@ public class StubOkHttpClientInterceptor implements Interceptor {
     }
 
     private okhttp3.Response getResponse(final okhttp3.Request request, final String body) {
-        return Mono.just(new okhttp3.Response.Builder())
-                .map(resp -> resp.code(OK.value()))
-                .map(resp -> resp.request(request))
-                .map(resp -> resp.message("[MUSHROOMS]Respond with stub data"))
-                .map(resp -> resp.protocol(HTTP_1_1))
-                .map(resp -> resp.body(ResponseBody.create(request.body().contentType(), body)))
-                .block()
+        return new okhttp3.Response.Builder()
+                .code(OK.value())
+                .request(request)
+                .message("[MUSHROOMS]Respond with stub data")
+                .protocol(HTTP_1_1)
+                .body(ResponseBody.create(request.body().contentType(), body))
                 .build();
     }
 
