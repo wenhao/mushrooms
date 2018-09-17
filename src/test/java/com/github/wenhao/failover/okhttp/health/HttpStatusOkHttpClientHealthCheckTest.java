@@ -1,5 +1,6 @@
 package com.github.wenhao.failover.okhttp.health;
 
+import com.github.wenhao.stub.okhttp.health.HttpStatusOkHttpClientHealthCheck;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.junit.jupiter.api.BeforeEach;

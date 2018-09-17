@@ -40,12 +40,9 @@ logging:
     dateformat: yyyy-MM-dd HH:mm:ss.SSS
 
 mushrooms:
-  failover:
-    enabled: true
-    headers:
-      - content-type
   stub:
     enabled: true
+    failover: true
     stubs:
       - request:
           path: http://localhost:8080/stub

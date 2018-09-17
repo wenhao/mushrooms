@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ConditionalOnMissingBean(okhttp3.OkHttpClient.class)
-@ConditionalOnExpression("${mushrooms.failover.enabled:true} || ${mushrooms.stub.enabled:true}")
+@ConditionalOnExpression("${mushrooms.stub.enabled:true}")
 public class OkHttpConfiguration {
 
     private okhttp3.OkHttpClient okHttpClient;

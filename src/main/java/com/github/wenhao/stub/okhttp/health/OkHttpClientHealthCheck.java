@@ -1,4 +1,4 @@
-package com.github.wenhao.failover.okhttp.health;
+package com.github.wenhao.stub.okhttp.health;
 
 import okhttp3.Response;
 

@@ -11,6 +11,8 @@ import com.github.wenhao.stub.matcher.RequestBodyMatcher;
 import com.github.wenhao.stub.matcher.RequestMatcher;
 import com.github.wenhao.stub.matcher.XMLBodyMatcher;
 import com.github.wenhao.stub.matcher.XpathBodyMatcher;
+import com.github.wenhao.stub.okhttp.health.HttpStatusOkHttpClientHealthCheck;
+import com.github.wenhao.stub.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.stub.okhttp.interceptor.StubOkHttpClientInterceptor;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,14 +30,20 @@ public class MushroomsStubAutoConfiguration {
     @Bean
     @Order
     public StubOkHttpClientInterceptor stubOkHttpClientInterceptor(MushroomsStubConfigurationProperties properties,
-                                                                   List<RequestMatcher> requestMatchers) {
-        return new StubOkHttpClientInterceptor(properties, requestMatchers);
+                                                                   List<RequestMatcher> requestMatchers,
+                                                                   List<OkHttpClientHealthCheck> healthChecks) {
+        return new StubOkHttpClientInterceptor(properties, requestMatchers, healthChecks);
     }
-
 
     @Bean
     public MushroomsStubConfigurationProperties mushroomsStubConfigurationProperties(ResourceReader resourceReader) {
         return new MushroomsStubConfigurationProperties(resourceReader);
+    }
+
+    @Bean
+    @Order(10)
+    public HttpStatusOkHttpClientHealthCheck httpStatusOkHttpClientHealthCheck() {
+        return new HttpStatusOkHttpClientHealthCheck();
     }
 
     @Bean

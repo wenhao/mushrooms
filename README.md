@@ -6,7 +6,7 @@
 
 # Mushrooms
 
-Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.
+Mushrooms is an easy setup stub framework. To ensure high levels of efficiency for remote service integration.
 
 ## Why
 
@@ -14,13 +14,9 @@ Remote service integration, especially based on HTTP protocol, e.g. web service,
 
 ### Features
 
-##### Failover
-
-Failover feature rely on okhhtp3, make sure FeignClient/RestTemplate are using okhttp3.
-
-* FeignClient/RestTemplate respond with cached data when remote server failure.
-
 ##### Stub
+
+Stub feature rely on okhttp3, make sure FeignClient/RestTemplate are using okhttp3.
 
 * Stub REST API.
 * Stub Soap API.
@@ -55,41 +51,6 @@ dependencies {
 
 ### Get Started
 
-#### Failover Configuration
-
-##### application.yml
-
-Enabled mushrooms failover and set included headers, don't include any frequent changeable header.
-
-```yaml
-mushrooms:
-  failover:
-    enabled: true
-    excludes:
-      - (.*)/failover(.*)
-    headers:
-      - application-specific
-      - content-type
-```
-
-Enabled RestTemplate failover, Customize RestTemplate by using Okhttp3.
-
-```java
-@Configuration
-public class RestTemplateConfiguration {
-
-  @Bean
-  public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
-    return new RestTemplate(clientHttpRequestFactory);
-  }
-
-  @Bean
-  public ClientHttpRequestFactory okHttp3ClientHttpRequestFactory(OkHttpClient okHttpClient) {
-    return new OkHttp3ClientHttpRequestFactory(okHttpClient);
-  }
-}
-```
-
 #### Stub Configuration
 
 Enabled mushrooms stub and set stub request and response.
@@ -120,6 +81,24 @@ mushrooms:
         response: /stubs/stub_soap_response.xml
 ```
 
+Enabled RestTemplate stub, Customize RestTemplate by using Okhttp3.
+
+```java
+@Configuration
+public class RestTemplateConfiguration {
+
+  @Bean
+  public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
+    return new RestTemplate(clientHttpRequestFactory);
+  }
+
+  @Bean
+  public ClientHttpRequestFactory okHttp3ClientHttpRequestFactory(OkHttpClient okHttpClient) {
+    return new OkHttp3ClientHttpRequestFactory(okHttpClient);
+  }
+}
+```
+
 **Request Matchers**
 
 A **request matcher** can contain any of the following matchers:
@@ -129,7 +108,7 @@ A **request matcher** can contain any of the following matchers:
 * query string - key to multiple values as a plain text, regular expression.
 * headers - key to multiple values as a plain text, regular expression.
 * body
-    * XPath
+    * XPath(example, body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"])
     * XML - full or partial match. 
     * JSON - full or partial match. 
     
@@ -154,7 +133,8 @@ mushrooms:
 
 #### Generic Configuration
 
-If enabled okhttp failover or stub, enabling feign okhttp client.
+If enabled okhttp stub, enabling feign okhttp client.
+
 ```yaml
 feign:
   okhttp:
@@ -167,21 +147,6 @@ feign:
         loggerLevel: full
 ```
 
-Failover will use redis, if RedisTemplate bean is not configured, add follow configuration:
-```yaml
-spring:
-  redis:
-    host: localhost
-    port: 6379
-    password:
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        max-wait: -1ms
-        min-idle: 1
-```
-
 Logging
 ```yaml
 logging:
@@ -189,35 +154,9 @@ logging:
     com.github.wenhao: DEBUG
 ```
 
-#### Customization
+#### Failover
 
-As default, failover only applys if httpstatus not equals to 200.
-
-##### Custom OkHttp Health Check
-
-As default, [HttpStatusOkHttpClientHealthCheck.java] added, customize health checks if need:
-
-```java
-@Component
-public class CustomOkHttpClientHealthCheck implements OkHttpClientHealthCheck {
-
-    @Override
-    public boolean health(final Response response) {
-        final String body = getResponseBody(response);
-        try {
-            final JSONObject jsonObject = new JSONObject(body);
-            return jsonObject.getBoolean("success");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-}
-```
-
-#### Attentions
-
-1. Failover okhttp interceptor always prior to stub okhttp interceptor.
-2. Exclude from failover okhttp configuration if don't need it when stub.
+As Failover is true, will call real endpoint first and return real response if health.
 
 ### Copyright and license
 
@@ -226,6 +165,4 @@ Copyright © 2018 Wen Hao
 Licensed under [Apache License]
 
 [logo]: ./docs/images/logo.png
-[HttpStatusRestTemplateHealthCheck.java]: ./src/main/java/com/github/wenhao/failover/resttemplate/health/HttpStatusRestTemplateHealthCheck.java
-[HttpStatusOkHttpClientHealthCheck.java]: ./src/main/java/com/github/wenhao/failover/okhttp/health/HttpStatusOkHttpClientHealthCheck.java
 [Apache License]: ./LICENSE

@@ -4,6 +4,7 @@ import com.github.wenhao.common.domain.Header;
 import com.github.wenhao.common.domain.Request;
 import com.github.wenhao.stub.domain.Stub;
 import com.github.wenhao.stub.matcher.RequestMatcher;
+import com.github.wenhao.stub.okhttp.health.OkHttpClientHealthCheck;
 import com.github.wenhao.stub.properties.MushroomsStubConfigurationProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static okhttp3.Protocol.HTTP_1_1;
 import static org.apache.commons.lang.StringUtils.substringBefore;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
@@ -28,17 +30,25 @@ import static org.springframework.http.HttpStatus.OK;
 public class StubOkHttpClientInterceptor implements Interceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
-    private final MushroomsStubConfigurationProperties properties;
+    private final MushroomsStubConfigurationProperties configuration;
     private final List<RequestMatcher> requestMatchers;
+    private final List<OkHttpClientHealthCheck> healthChecks;
 
     @Override
     public okhttp3.Response intercept(final Chain chain) throws IOException {
         final okhttp3.Request request = chain.request();
         final Request realRequest = getRequest(request);
-        final Optional<Stub> optionalStub = properties.getStubs().stream()
+        final Optional<Stub> optionalStub = configuration.getStubs().stream()
                 .filter(stub -> requestMatchers.stream().allMatch(matcher -> matcher.match(stub.getRequest(), realRequest)))
                 .findFirst();
         if (optionalStub.isPresent()) {
+            if (configuration.isFailover()) {
+                final okhttp3.Response response = getRemoteResponse(chain, request);
+                boolean isHealth = healthChecks.stream().allMatch(check -> check.health(response));
+                if (isHealth) {
+                    return response;
+                }
+            }
             log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
             return getResponse(request, optionalStub.get().getResponse());
         }
@@ -76,6 +86,21 @@ public class StubOkHttpClientInterceptor implements Interceptor {
             return buffer.clone().readString(charset);
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    private okhttp3.Response getRemoteResponse(final Chain chain, final okhttp3.Request request) {
+        try {
+            return chain.proceed(request);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new okhttp3.Response.Builder()
+                    .code(INTERNAL_SERVER_ERROR.value())
+                    .request(request)
+                    .message(e.getMessage())
+                    .protocol(HTTP_1_1)
+                    .body(ResponseBody.create(request.body().contentType(), e.getMessage()))
+                    .build();
         }
     }
 }
