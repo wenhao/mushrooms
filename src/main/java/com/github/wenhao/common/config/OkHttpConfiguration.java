@@ -3,8 +3,8 @@ package com.github.wenhao.common.config;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.commons.httpclient.OkHttpClientConnectionPoolFactory;
 import org.springframework.cloud.commons.httpclient.OkHttpClientFactory;
 import org.springframework.cloud.openfeign.support.FeignHttpClientProperties;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ConditionalOnMissingBean(okhttp3.OkHttpClient.class)
-@ConditionalOnExpression("${mushrooms.stub.enabled:true}")
+@ConditionalOnProperty(prefix = "mushrooms.stub", value = "enabled", havingValue = "true")
 public class OkHttpConfiguration {
 
     private okhttp3.OkHttpClient okHttpClient;
