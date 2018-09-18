@@ -111,6 +111,7 @@ A **request matcher** can contain any of the following matchers:
     * XPath(example, body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"])
     * XML - full or partial match. 
     * JSON - full or partial match. 
+    * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)])
     
 **Full setup**
 ```yaml
