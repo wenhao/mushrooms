@@ -21,10 +21,14 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '3.0.3'
+version = '3.0.4'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
 
 dependencyManagement {
     imports {
@@ -40,6 +44,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.json:json:20180130'
     implementation 'org.skyscreamer:jsonassert:1.5.0'
+    implementation 'com.jayway.jsonpath:json-path:2.4.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -58,10 +63,6 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.2.0"
     testImplementation "commons-io:commons-io:2.6"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.2.0"
-}
-
-repositories {
-    jcenter()
 }
 
 jar {
@@ -233,7 +234,7 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '3.0.3'
+            version '3.0.4'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.')
@@ -268,10 +269,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '3.0.3'
+            name = '3.0.4'
             desc = 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.'
             released = new Date()
-            vcsTag = '3.0.3'
+            vcsTag = '3.0.4'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

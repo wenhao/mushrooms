@@ -4,6 +4,7 @@ import com.github.wenhao.stub.dataloader.ResourceReader;
 import com.github.wenhao.stub.matcher.BodyMatcher;
 import com.github.wenhao.stub.matcher.HeaderMatcher;
 import com.github.wenhao.stub.matcher.JsonBodyMatcher;
+import com.github.wenhao.stub.matcher.JsonPathMatcher;
 import com.github.wenhao.stub.matcher.MethodMatcher;
 import com.github.wenhao.stub.matcher.ParameterMatcher;
 import com.github.wenhao.stub.matcher.PathMatcher;
@@ -85,6 +86,11 @@ public class MushroomsStubAutoConfiguration {
     @Bean
     public RequestBodyMatcher jsonBodyMatcher() {
         return new JsonBodyMatcher();
+    }
+
+    @Bean
+    public RequestBodyMatcher jsonPathBodyMatcher() {
+        return new JsonPathMatcher();
     }
 
     @Bean

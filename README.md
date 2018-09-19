@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:3.0.3'
+    compile 'com.github.wenhao:mushrooms:3.0.4'
 }
 ```
 
@@ -39,7 +39,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
 </dependency>
 ```
 
@@ -111,7 +111,7 @@ A **request matcher** can contain any of the following matchers:
     * XPath(example, body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"])
     * XML - full or partial match. 
     * JSON - full or partial match. 
-    * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)])
+    * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)]), [jsonPath syntax](https://github.com/json-path/JsonPath)
     
 **Full setup**
 ```yaml
