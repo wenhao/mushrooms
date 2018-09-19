@@ -6,7 +6,7 @@
 
 # Mushrooms
 
-Mushrooms is an easy setup stub framework. To ensure high levels of efficiency for remote service integration.
+Mushrooms is an easy setup mock or stub framework. To ensure high levels of efficiency for remote service integration.
 
 ## Why
 
@@ -16,7 +16,7 @@ Remote service integration, especially based on HTTP protocol, e.g. web service,
 
 ##### Stub
 
-Stub feature rely on okhttp3, make sure FeignClient/RestTemplate are using okhttp3.
+Stub feature rely on spring boot and okhttp3, make sure FeignClient/RestTemplate are using okhttp3.
 
 * Stub REST API.
 * Stub Soap API.
@@ -50,6 +50,40 @@ dependencies {
 ```
 
 ### Get Started
+
+**Request Matchers**
+
+A **request matcher** can contain any of the following matchers:
+
+* method - string value as a plain text, regular expression.
+* path - string value as a plain text, regular expression.
+* query string - key to multiple values as a plain text, regular expression.
+* headers - key to multiple values as a plain text, regular expression.
+* body
+    * XPath(example, body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"])
+    * XML - full or partial match. 
+    * JSON - full or partial match. 
+    * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)]), [jsonPath syntax](https://github.com/json-path/JsonPath)
+    
+**Full setup**
+```yaml
+mushrooms:
+  stub:
+    enabled: true
+    failover: true
+    stubs:
+      - request:
+          path: ${REAL_HOST:http://localhost:8080}/stub(.*)
+          parameters: 
+            - key: [A-z]{0,10}
+              value: [A-Z0-9]+
+          method: P(.*)
+          headers:
+            - key: [A-z]{0,10}
+              value: [A-Z0-9]+
+          body: /stubs/stub_rest_request.json
+        response: /stubs/stub_rest_response.json
+```    
 
 #### Stub Configuration
 
@@ -98,39 +132,6 @@ public class RestTemplateConfiguration {
   }
 }
 ```
-
-**Request Matchers**
-
-A **request matcher** can contain any of the following matchers:
-
-* method - string value as a plain text, regular expression.
-* path - string value as a plain text, regular expression.
-* query string - key to multiple values as a plain text, regular expression.
-* headers - key to multiple values as a plain text, regular expression.
-* body
-    * XPath(example, body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"])
-    * XML - full or partial match. 
-    * JSON - full or partial match. 
-    * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)]), [jsonPath syntax](https://github.com/json-path/JsonPath)
-    
-**Full setup**
-```yaml
-mushrooms:
-  stub:
-    enabled: true
-    stubs:
-      - request:
-          path: ${REAL_HOST:http://localhost:8080}/stub(.*)
-          parameters: 
-            - key: [A-z]{0,10}
-              value: [A-Z0-9]+
-          method: P(.*)
-          headers:
-            - key: [A-z]{0,10}
-              value: [A-Z0-9]+
-          body: /stubs/stub_rest_request.json
-        response: /stubs/stub_rest_response.json
-```    
 
 #### Generic Configuration
 
