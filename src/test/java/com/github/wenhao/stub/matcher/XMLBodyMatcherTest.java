@@ -77,6 +77,37 @@ class XMLBodyMatcherTest {
     }
 
     @Test
+    void should_not_match_if_xml_not_valid() {
+        // given
+        final Request stub = Request.builder()
+                .body("<bookstore> \n" +
+                        "   <book nationality=\"ITALIAN\" category=\"COOKING\">\n" +
+                        "       <title lang=\"en\">Everyday Italian</title>\n" +
+                        "       <author>Giada De Laurentiis</author>\n" +
+                        "       <year>2005</year>\n" +
+                        "       <price>30.00</price>\n" +
+                        "   </book>\n" +
+                        ">")
+                .build();
+        final Request real = Request.builder()
+                .body("<bookstore> \n" +
+                        "   <book nationality=\"ITALIAN\" category=\"COOKING\">\n" +
+                        "       <title lang=\"en\">Everyday Italian</title>\n" +
+                        "       <author>Giada De Laurentiis</author>\n" +
+                        "       <year>2005</year>\n" +
+                        "       <price>30.00</price>\n" +
+                        "   </book>\n" +
+                        ">")
+                .build();
+
+        // when
+        final boolean isMatch = xmlBodyMatcher.match(stub, real);
+
+        // then
+        assertThat(isMatch).isFalse();
+    }
+
+    @Test
     void should_applicable_if_xml() {
         // given
         final Request stub = Request.builder()

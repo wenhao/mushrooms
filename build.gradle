@@ -148,7 +148,7 @@ jacocoTestReport {
                             '**/interceptor/*.class',
                             '**/response/*.class',
                             '**/config/*.class',
-                            '**/XMLBodyMatcher.class',
+//                            '**/XMLBodyMatcher.class',
                             '**/dataloader/*.class'
                     ]
             )
