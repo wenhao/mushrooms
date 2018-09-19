@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.github.wenhao'
-version = '3.0.4'
+version = '3.0.5'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -148,7 +148,6 @@ jacocoTestReport {
                             '**/interceptor/*.class',
                             '**/response/*.class',
                             '**/config/*.class',
-//                            '**/XMLBodyMatcher.class',
                             '**/dataloader/*.class'
                     ]
             )
@@ -168,7 +167,6 @@ jacocoTestCoverageVerification {
                     '**.interceptor.*',
                     '**.response.*',
                     '**.config.*',
-                    '**.XMLBodyMatcher',
                     '**.dataloader.*'
             ]
 
@@ -234,7 +232,7 @@ publishing {
             artifact javadocJar
             groupId 'com.github.wenhao'
             artifactId 'mushrooms'
-            version '3.0.4'
+            version '3.0.5'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.')
@@ -269,10 +267,10 @@ bintray {
         githubRepo = 'wenhao/mushrooms'
         githubReleaseNotesFile = 'README.md'
         version {
-            name = '3.0.4'
+            name = '3.0.5'
             desc = 'Mushrooms is an easy setup failover and stub framework. To ensure high levels of efficiency for remote service integration.'
             released = new Date()
-            vcsTag = '3.0.4'
+            vcsTag = '3.0.5'
             gpg {
                 sign = true
                 passphrase = 'passphrase'

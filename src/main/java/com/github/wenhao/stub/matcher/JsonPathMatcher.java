@@ -16,7 +16,11 @@ public class JsonPathMatcher implements RequestBodyMatcher {
     @Override
     public boolean match(final Request stubRequest, final Request realRequest) {
         final String jsonPath = StringUtils.substringAfter(stubRequest.getBody(), "jsonPath:");
-        final List result = JsonPath.parse(realRequest.getBody()).read(jsonPath, List.class);
-        return result.size() != 0;
+        try {
+            final List result = JsonPath.parse(realRequest.getBody()).read(jsonPath, List.class);
+            return result.size() != 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
