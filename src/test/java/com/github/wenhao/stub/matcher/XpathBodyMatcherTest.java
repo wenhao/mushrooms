@@ -54,6 +54,69 @@ class XpathBodyMatcherTest {
     }
 
     @Test
+    void should_match_if_request_contains_namespace() {
+        // given
+        final Request stubRequst = Request.builder()
+                .body("xpath:/Envelope/Body/GetBookRequest[BookName='Java']")
+                .build();
+        final Request realRequest = Request.builder()
+                .body("<soap:Envelope\n" +
+                        "        xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope/\"\n" +
+                        "        soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\">\n" +
+                        "    <soap:Body xmlns:m=\"http://www.example.org/stock\">\n" +
+                        "        <m:GetBookRequest>\n" +
+                        "            <m:BookName>Java</m:BookName>\n" +
+                        "        </m:GetBookRequest>\n" +
+                        "    </soap:Body>\n" +
+                        "</soap:Envelope>")
+                .build();
+
+
+        // when
+        final boolean isMatched = matcher.match(stubRequst, realRequest);
+
+        // then
+        assertThat(isMatched).isTrue();
+    }
+
+    @Test
+    void should_not_match_if_xpath_not_exist() {
+        // given
+        final Request stubRequst = Request.builder()
+                .body("xpath:/bookstore/book[price>35]/price")
+                .build();
+        final Request realRequest = Request.builder()
+                .body("<bookstore>\n" +
+                        "  <book category=\"COOKING\">\n" +
+                        "    <title lang=\"en\">Everyday Italian</title>\n" +
+                        "    <author>Giada De Laurentiis</author>\n" +
+                        "    <year>2005</year>\n" +
+                        "    <price>30.00</price>\n" +
+                        "  </book>\n" +
+                        "  <book category=\"CHILDREN\">\n" +
+                        "    <title lang=\"en\">Harry Potter</title>\n" +
+                        "    <author>J K. Rowling</author>\n" +
+                        "    <year>2005</year>\n" +
+                        "    <price>29.99</price>\n" +
+                        "  </book>\n" +
+                        "  <book category=\"WEB\">\n" +
+                        "    <title lang=\"en\">Learning XML</title>\n" +
+                        "    <author>Erik T. Ray</author>\n" +
+                        "    <year>2003</year>\n" +
+                        "    <price>31.95</price>\n" +
+                        "  </book>\n" +
+                        "</bookstore>")
+                .build();
+
+
+        // when
+        final boolean isMatched = matcher.match(stubRequst, realRequest);
+
+        // then
+        assertThat(isMatched).isFalse();
+    }
+
+    @Test
     void should_not_match_if_xml_not_valid() {
         // given
         final Request stubRequst = Request.builder()

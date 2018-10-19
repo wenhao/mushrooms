@@ -1,5 +1,6 @@
 package com.github.wenhao.common.config;
 
+import feign.Client;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @ConditionalOnMissingBean(okhttp3.OkHttpClient.class)
 @ConditionalOnProperty(prefix = "mushrooms.stub", value = "enabled", havingValue = "true")
-public class OkHttpConfiguration {
+public class OkHttpFeignConfiguration {
 
     private okhttp3.OkHttpClient okHttpClient;
 
@@ -53,6 +54,12 @@ public class OkHttpConfiguration {
             okHttpClient.dispatcher().executorService().shutdown();
             okHttpClient.connectionPool().evictAll();
         }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(Client.class)
+    public Client feignClient(okhttp3.OkHttpClient client) {
+        return new feign.okhttp.OkHttpClient(client);
     }
 
 }

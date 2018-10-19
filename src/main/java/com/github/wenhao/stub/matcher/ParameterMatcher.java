@@ -2,7 +2,8 @@ package com.github.wenhao.stub.matcher;
 
 import com.github.wenhao.common.domain.Request;
 
-import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 
 public class ParameterMatcher implements RequestMatcher {
 

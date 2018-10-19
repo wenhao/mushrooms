@@ -60,7 +60,7 @@ A **request matcher** can contain any of the following matchers:
 * query string - key to multiple values as a plain text, regular expression.
 * headers - key to multiple values as a plain text, regular expression.
 * body
-    * XPath(example, body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"])
+    * XPath(example, body: xpath:/Envelope/Body/GetBookRequest[BookName='Java']), **without NAMESPACE**.
     * XML - full or partial match. 
     * JSON - full or partial match. 
     * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)]), [jsonPath syntax](https://github.com/json-path/JsonPath)

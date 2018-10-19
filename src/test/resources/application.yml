@@ -52,5 +52,5 @@ mushrooms:
       - request:
           path: http://localhost:8080/stub/get_book
           method: POST
-          body: xpath:/soap:Envelope/soap:Body/m:GetBookRequest[m:BookName="Java"]
+          body: xpath:/Envelope/Body/GetBookRequest[BookName='Java']
         response: /stubs/stub_soap_response.xml

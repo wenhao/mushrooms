@@ -23,13 +23,13 @@ public class BookService {
 
     private final TemplateService templateService;
     private final SoapClient soapClient;
-    private final SoapService soapService;
+    private final XmlDeserializeService xmlDeserializeService;
 
     public Book get(String name) {
         final Map<String, Object> values = ImmutableMap.of("model", new BookRequest(name));
         final String requestBody = templateService.get(GET_BOOK_PRICE.getKey(), values);
         final Response response = soapClient.getBook(requestBody);
-        return soapService.get(getResponseBody(response), GET_BOOK_PRICE.getValue(), Book.class);
+        return xmlDeserializeService.get(getResponseBody(response), GET_BOOK_PRICE.getValue(), Book.class);
     }
 
     private String getResponseBody(Response response) {
