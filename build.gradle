@@ -15,7 +15,6 @@ plugins {
     id "com.palantir.docker" version "0.20.1"
     id "com.jfrog.bintray" version "1.8.4"
     id 'maven-publish'
-    id 'signing'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -92,13 +91,6 @@ artifacts {
     archives jar
     archives sourcesJar
     archives javadocJar
-}
-
-ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-
-signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
 }
 
 checkstyle {
