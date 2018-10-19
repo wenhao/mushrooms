@@ -74,10 +74,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
         String parameterString = substringAfter(request.url().toString(), "?");
         return Pattern.compile("&")
                 .splitAsStream(parameterString)
-                .map(param -> {
-                    String[] keyAndValue = param.split("=");
-                    return new Parameter(keyAndValue[0], keyAndValue[1]);
-                })
+                .map(param -> new Parameter(substringBefore(param, "="), substringAfter(param, "=")))
                 .collect(toList());
     }
 
@@ -87,6 +84,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                 .request(request)
                 .message("[MUSHROOMS]Respond with stub data")
                 .protocol(HTTP_1_1)
+                .headers(request.headers())
                 .body(ResponseBody.create(request.body().contentType(), body))
                 .build();
     }
