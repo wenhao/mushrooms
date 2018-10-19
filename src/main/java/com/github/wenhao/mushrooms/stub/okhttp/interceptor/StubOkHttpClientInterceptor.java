@@ -1,6 +1,7 @@
 package com.github.wenhao.mushrooms.stub.okhttp.interceptor;
 
 import com.github.wenhao.mushrooms.common.domain.Header;
+import com.github.wenhao.mushrooms.common.domain.Parameter;
 import com.github.wenhao.mushrooms.common.domain.Request;
 import com.github.wenhao.mushrooms.stub.domain.Stub;
 import com.github.wenhao.mushrooms.stub.matcher.RequestMatcher;
@@ -17,9 +18,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toList;
 import static okhttp3.Protocol.HTTP_1_1;
+import static org.apache.commons.lang.StringUtils.substringAfter;
 import static org.apache.commons.lang.StringUtils.substringBefore;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -61,9 +64,21 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                 .headers(request.headers().names().stream()
                         .map(name -> Header.builder().name(name).value(request.headers().get(name)).build())
                         .collect(toList()))
+                .parameters(getParameters(request))
                 .body(Optional.ofNullable(request.body()).map(this::getRequestBody).orElse(""))
                 .contentType(request.body().contentType().toString())
                 .build();
+    }
+
+    private List<Parameter> getParameters(okhttp3.Request request) {
+        String parameterString = substringAfter(request.url().toString(), "?");
+        return Pattern.compile("&")
+                .splitAsStream(parameterString)
+                .map(param -> {
+                    String[] keyAndValue = param.split("=");
+                    return new Parameter(keyAndValue[0], keyAndValue[1]);
+                })
+                .collect(toList());
     }
 
     private okhttp3.Response getResponse(final okhttp3.Request request, final String body) {
