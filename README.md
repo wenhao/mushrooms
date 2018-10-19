@@ -153,7 +153,7 @@ Logging
 ```yaml
 logging:
   level:
-    com.github.wenhao: DEBUG
+    com.github.wenhao.mushrooms: DEBUG
 ```
 
 #### Failover

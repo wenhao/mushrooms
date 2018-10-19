@@ -35,7 +35,7 @@ feign:
         loggerLevel: full
 logging:
   level:
-    com.github.wenhao: DEBUG
+    com.github.wenhao.mushrooms: DEBUG
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss.SSS
 
