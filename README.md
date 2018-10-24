@@ -21,6 +21,11 @@ Stub feature rely on spring boot and okhttp3, make sure FeignClient/RestTemplate
 * Stub REST API.
 * Stub Soap API.
 
+### Dependencies
+
+1. org.springframework.cloud:spring-cloud-starter-openfeign.
+2. io.github.openfeign:feign-okhttp.
+
 ### Gradle
 
 ```groovy
