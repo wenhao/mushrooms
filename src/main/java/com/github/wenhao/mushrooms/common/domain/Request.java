@@ -24,10 +24,4 @@ public class Request implements Serializable {
     private String body;
     private List<Header> headers;
     private String contentType;
-
-    public String toString() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(this);
-    }
-
 }

@@ -51,7 +51,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                     return response;
                 }
             }
-            log.debug("[MUSHROOMS]Respond with stub data for request\n{}", realRequest.toString());
+            log.debug("[MUSHROOMS]Respond with stub data for current request.");
             return getResponse(request, optionalStub.get().getResponse());
         }
         return chain.proceed(request);
