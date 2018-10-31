@@ -1,8 +1,6 @@
 package com.github.wenhao.mushrooms.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
