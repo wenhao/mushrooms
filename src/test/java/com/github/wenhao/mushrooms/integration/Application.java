@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @SpringBootApplication
-@ComponentScan("com.github.wenhao.mushrooms.integration")
 @EnableFeignClients("com.github.wenhao.mushrooms.integration")
 @Configuration
 public class Application {

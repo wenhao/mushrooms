@@ -1,6 +1,6 @@
 package com.github.wenhao.mushrooms.stub.matcher;
 
-import com.github.wenhao.mushrooms.common.domain.Request;
+import com.github.wenhao.mushrooms.stub.domain.Request;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

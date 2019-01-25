@@ -1,7 +1,7 @@
 package com.github.wenhao.mushrooms.stub.matcher;
 
-import com.github.wenhao.mushrooms.common.domain.Request;
-import lombok.extern.slf4j.Slf4j;
+import com.github.wenhao.mushrooms.stub.domain.Request;
+import static org.apache.commons.lang.StringUtils.substringAfter;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -11,11 +11,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static org.apache.commons.lang.StringUtils.substringAfter;
-
-@Slf4j
 public class XpathBodyMatcher implements RequestBodyMatcher {
+
+    private final Logger logger = Logger.getLogger(XpathBodyMatcher.class.getName());
 
     @Override
     public boolean isApplicable(final Request stubRequest, final Request realRequest) {
@@ -33,7 +34,7 @@ public class XpathBodyMatcher implements RequestBodyMatcher {
             Document document = documentBuilder.parse(new InputSource(new StringReader(requestBody)));
             return (Boolean) xPathExpression.evaluate(document, XPathConstants.BOOLEAN);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            logger.log(Level.INFO, e.getMessage(), e);
             return false;
         }
     }

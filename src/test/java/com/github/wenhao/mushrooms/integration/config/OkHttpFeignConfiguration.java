@@ -1,4 +1,4 @@
-package com.github.wenhao.mushrooms.common.config;
+package com.github.wenhao.mushrooms.integration.config;
 
 import feign.Client;
 import okhttp3.ConnectionPool;
@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@ConditionalOnMissingBean(okhttp3.OkHttpClient.class)
+@ConditionalOnMissingBean(OkHttpClient.class)
 @ConditionalOnProperty(prefix = "mushrooms.stub", value = "enabled", havingValue = "true")
 public class OkHttpFeignConfiguration {
 
-    private okhttp3.OkHttpClient okHttpClient;
+    private OkHttpClient okHttpClient;
 
     @Bean
     @ConditionalOnMissingBean(ConnectionPool.class)
@@ -34,7 +34,7 @@ public class OkHttpFeignConfiguration {
     }
 
     @Bean
-    public okhttp3.OkHttpClient client(OkHttpClientFactory httpClientFactory,
+    public OkHttpClient client(OkHttpClientFactory httpClientFactory,
                                        ConnectionPool connectionPool, FeignHttpClientProperties httpClientProperties,
                                        List<Interceptor> interceptors) {
         Boolean followRedirects = httpClientProperties.isFollowRedirects();
@@ -58,7 +58,7 @@ public class OkHttpFeignConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(Client.class)
-    public Client feignClient(okhttp3.OkHttpClient client) {
+    public Client feignClient(OkHttpClient client) {
         return new feign.okhttp.OkHttpClient(client);
     }
 

@@ -1,6 +1,6 @@
 package com.github.wenhao.mushrooms.stub.matcher;
 
-import com.github.wenhao.mushrooms.common.domain.Request;
+import com.github.wenhao.mushrooms.stub.domain.Request;
 
 public class PathMatcher implements RequestMatcher {
 

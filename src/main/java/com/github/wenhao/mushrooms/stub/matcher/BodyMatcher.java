@@ -1,13 +1,13 @@
 package com.github.wenhao.mushrooms.stub.matcher;
 
-import com.github.wenhao.mushrooms.common.domain.Request;
-import lombok.RequiredArgsConstructor;
+import com.github.wenhao.mushrooms.stub.domain.Request;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BodyMatcher implements RequestMatcher {
 
     private final List<RequestBodyMatcher> requestBodyMatchers;

@@ -1,4 +1,4 @@
-package com.github.wenhao.mushrooms.common.domain;
+package com.github.wenhao.mushrooms.stub.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +18,4 @@ public class Response {
     @Builder.Default
     private List<Header> headers = new ArrayList<>();
     private String contentType;
-
 }

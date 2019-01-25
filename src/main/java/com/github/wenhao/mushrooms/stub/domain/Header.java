@@ -1,4 +1,4 @@
-package com.github.wenhao.mushrooms.common.domain;
+package com.github.wenhao.mushrooms.stub.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Header implements Serializable {
 
     private String name;

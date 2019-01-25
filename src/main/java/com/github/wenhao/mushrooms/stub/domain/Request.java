@@ -1,6 +1,5 @@
-package com.github.wenhao.mushrooms.common.domain;
+package com.github.wenhao.mushrooms.stub.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +9,9 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 public class Request implements Serializable {
 
     private String path;
