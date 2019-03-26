@@ -61,7 +61,6 @@ import java.util.regex.Pattern;
 
 @AllArgsConstructor
 public class StubOkHttpClientInterceptor implements Interceptor {
-
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final StubConfiguration configuration;
     private final List<RequestMatcher> requestMatchers;
@@ -151,7 +150,6 @@ public class StubOkHttpClientInterceptor implements Interceptor {
     }
 
     public static class StubOkHttpClientInterceptorBuilder {
-
         private StubConfiguration configuration;
         private List<RequestMatcher> requestMatchers;
         private List<OkHttpClientHealthCheck> healthChecks;
