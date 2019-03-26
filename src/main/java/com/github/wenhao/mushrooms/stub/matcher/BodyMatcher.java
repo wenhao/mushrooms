@@ -5,7 +5,7 @@ import com.github.wenhao.mushrooms.stub.domain.Request;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @AllArgsConstructor
 public class BodyMatcher implements RequestMatcher {

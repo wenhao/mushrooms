@@ -2,14 +2,14 @@ package com.github.wenhao.mushrooms.stub.matcher;
 
 import com.github.wenhao.mushrooms.stub.domain.Request;
 
-import static org.springframework.util.CollectionUtils.isEmpty;
+import java.util.Objects;
 
 
 public class ParameterMatcher implements RequestMatcher {
 
     @Override
     public boolean match(final Request stubRequest, final Request realRequest) {
-        if (isEmpty(stubRequest.getParameters())) {
+        if (Objects.isNull(stubRequest.getParameters()) || stubRequest.getParameters().isEmpty()) {
             return true;
         }
         return realRequest.getParameters().stream()

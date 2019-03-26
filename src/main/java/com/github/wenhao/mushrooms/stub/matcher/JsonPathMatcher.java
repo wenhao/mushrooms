@@ -2,7 +2,7 @@ package com.github.wenhao.mushrooms.stub.matcher;
 
 import com.github.wenhao.mushrooms.stub.domain.Request;
 import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 

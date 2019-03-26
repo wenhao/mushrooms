@@ -2,14 +2,14 @@ package com.github.wenhao.mushrooms.stub.matcher;
 
 import com.github.wenhao.mushrooms.stub.domain.Request;
 
-import static org.springframework.util.CollectionUtils.isEmpty;
+import java.util.Objects;
 
 
 public class HeaderMatcher implements RequestMatcher {
 
     @Override
     public boolean match(final Request stubRequest, final Request realRequest) {
-        if (isEmpty(stubRequest.getHeaders())) {
+        if (Objects.isNull(stubRequest.getHeaders()) || stubRequest.getHeaders().isEmpty()) {
             return true;
         }
         return realRequest.getHeaders().stream()

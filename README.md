@@ -23,8 +23,7 @@ Stub feature rely on spring boot and okhttp3, make sure FeignClient/RestTemplate
 
 ### Dependencies
 
-1. org.springframework.cloud:spring-cloud-starter-openfeign.
-2. io.github.openfeign:feign-okhttp.
+1. io.github.openfeign:feign-okhttp.
 
 ### Gradle
 
@@ -34,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.wenhao:mushrooms:3.0.7'
+    compile 'com.github.wenhao:mushrooms:3.0.8'
 }
 ```
 
@@ -44,7 +43,7 @@ dependencies {
 <dependency>
     <groupId>com.github.wenhao</groupId>
     <artifactId>mushrooms</artifactId>
-    <version>3.0.7</version>
+    <version>3.0.8</version>
 </dependency>
 ```
 
@@ -69,6 +68,12 @@ A **request matcher** can contain any of the following matchers:
     * XML - full or partial match. 
     * JSON - full or partial match. 
     * JsonPath(example, body: jsonPath:$.store.book[?(@.price < 10)]), [jsonPath syntax](https://github.com/json-path/JsonPath)
+    
+#### Integrate with Spring boot
+
+1. add application.yml configuration, eg.[MushroomsStubConfiguration.java](./src/test/java/com/github/wenhao/mushrooms/integration/config/MushroomsStubConfiguration.java).
+2. initialize StubOkHttpClientInterceptor via spring bean config, eg.[BeanConfiguration.java](./src/test/java/com/github/wenhao/mushrooms/integration/config/BeanConfiguration.java).
+3. override the OkHttpFeignConfiguration if you're using FeignClient, eg.[OkHttpFeignConfiguration](./src/test/java/com/github/wenhao/mushrooms/integration/config/OkHttpFeignConfiguration.java).
     
 **Full setup**
 ```yaml
@@ -120,7 +125,7 @@ mushrooms:
         response: /stubs/stub_soap_response.xml
 ```
 
-Enabled RestTemplate stub, Customize RestTemplate by using Okhttp3.
+Enabled RestTemplate stub, Customize RestTemplate by using Okhttp3, [RestTemplateConfiguration](./src/test/java/com/github/wenhao/mushrooms/integration/config/RestTemplateConfiguration.java).
 
 ```java
 @Configuration

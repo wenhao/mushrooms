@@ -1,7 +1,7 @@
 package com.github.wenhao.mushrooms.stub.matcher;
 
 import com.github.wenhao.mushrooms.stub.domain.Request;
-import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 

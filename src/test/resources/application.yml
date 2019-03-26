@@ -45,7 +45,7 @@ mushrooms:
     failover: true
     stubs:
       - request:
-          path: http://localhost:8080/stub
+          path: http://localhost:8080/stub/book
           method: POST
           body: /stubs/stub_rest_request.json
         response: /stubs/stub_rest_response.json

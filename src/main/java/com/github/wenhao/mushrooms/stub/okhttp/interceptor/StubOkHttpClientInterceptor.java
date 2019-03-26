@@ -1,7 +1,6 @@
 package com.github.wenhao.mushrooms.stub.okhttp.interceptor;
 
 import com.github.wenhao.mushrooms.stub.config.StubConfiguration;
-import com.github.wenhao.mushrooms.stub.dataloader.ResourceReader;
 import com.github.wenhao.mushrooms.stub.domain.Header;
 import com.github.wenhao.mushrooms.stub.domain.Parameter;
 import com.github.wenhao.mushrooms.stub.domain.Request;
@@ -26,11 +25,8 @@ import static okhttp3.Protocol.HTTP_1_1;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.Buffer;
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
-import org.springframework.util.Assert;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -65,7 +61,6 @@ public class StubOkHttpClientInterceptor implements Interceptor {
                     return response;
                 }
             }
-            logger.log(Level.INFO, "[MUSHROOMS]Respond with stub data for current request.");
             return getResponse(request, optionalStub.get().getResponse());
         }
         return chain.proceed(request);
@@ -94,11 +89,11 @@ public class StubOkHttpClientInterceptor implements Interceptor {
 
     private okhttp3.Response getResponse(final okhttp3.Request request, final String body) {
         return new okhttp3.Response.Builder()
-                .code(OK.value())
+                .code(200)
                 .request(request)
                 .message("[MUSHROOMS]Respond with stub data")
                 .protocol(HTTP_1_1)
-                .headers(request.headers())
+                .addHeader("Content-Type", request.body().contentType().toString())
                 .body(ResponseBody.create(request.body().contentType(), body))
                 .build();
     }
@@ -120,7 +115,7 @@ public class StubOkHttpClientInterceptor implements Interceptor {
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             return new okhttp3.Response.Builder()
-                    .code(INTERNAL_SERVER_ERROR.value())
+                    .code(500)
                     .request(request)
                     .message(e.getMessage())
                     .protocol(HTTP_1_1)
@@ -176,22 +171,9 @@ public class StubOkHttpClientInterceptor implements Interceptor {
             return healthChecks;
         }
 
-        private List<Stub> getStubs() {
-            Assert.notNull(this.configuration, "stub configuration can't be null.");
-            ResourceReader resourceReader = new ResourceReader();
-            return this.configuration.getStubs().stream().peek(stub -> {
-                final String body = Optional.ofNullable(stub.getRequest().getBody()).orElse("");
-                if (body.startsWith("xpath:") || body.startsWith("jsonPath:")) {
-                    stub.getRequest().setBody(resourceReader.readAsString(body));
-                }
-                stub.setResponse(Optional.ofNullable(stub.getResponse()).map(resourceReader::readAsString).orElse(""));
-            }).collect(toList());
-        }
-
         public StubOkHttpClientInterceptor build() {
             this.requestMatchers = Optional.ofNullable(requestMatchers).orElse(defaultRequestMatchers());
             this.healthChecks = Optional.ofNullable(healthChecks).orElse(defaultHealthChecks());
-            this.configuration.setStubs(getStubs());
             return new StubOkHttpClientInterceptor(this.configuration, this.requestMatchers, this.healthChecks);
         }
     }
