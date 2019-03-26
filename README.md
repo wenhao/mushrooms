@@ -172,7 +172,7 @@ As Failover is true, will call real endpoint first and return real response if h
 
 ### Copyright and license
 
-Copyright © 2018 Wen Hao
+Copyright © 2019 Wen Hao
 
 Licensed under [Apache License]
 
